@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CP Group ENGHG Dashboard 2020-2025</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+<link rel="icon" type="image/png" href="icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CP ENGHG">
+<meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+<style>
+:root{
+  color-scheme: light;
+  --surface-1:      #fcfcfb;
+  --page-plane:     #f9f9f7;
+  --text-primary:   #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted:     #898781;
+  --gridline:       #e1e0d9;
+  --baseline:       #c3c2b7;
+  --border:         rgba(11,11,11,0.10);
+  --good:           #006300;
+  --critical:       #d03b3b;
+
+  --s1-blue:    #2a78d6;
+  --s2-orange:  #eb6834;
+  --s3-aqua:    #1baf7a;
+  --s4-yellow:  #eda100;
+  --s8-red:     #e34948;
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --surface-1:      #1a1a19;
+  --page-plane:     #0d0d0d;
+  --text-primary:   #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted:     #898781;
+  --gridline:       #2c2c2a;
+  --baseline:       #383835;
+  --border:         rgba(255,255,255,0.10);
+  --good:           #0ca30c;
+  --critical:       #e66767;
+
+  --s1-blue:    #3987e5;
+  --s2-orange:  #d95926;
+  --s3-aqua:    #199e70;
+  --s4-yellow:  #c98500;
+  --s8-red:     #e66767;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --page-plane:     #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --gridline:       #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+    --good:           #0ca30c;
+    --critical:       #e66767;
+
+    --s1-blue:    #3987e5;
+    --s2-orange:  #d95926;
+    --s3-aqua:    #199e70;
+    --s4-yellow:  #c98500;
+    --s8-red:     #e66767;
+  }
+}
+
+*{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html,body{ margin:0; padding:0; }
+body{
+  background: var(--page-plane);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  min-height: 100vh;
+}
+.app{ max-width: 560px; margin: 0 auto; padding: 0 0 40px; }
+
+header{
+  position: sticky; top:0; z-index: 20;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 14px 16px 10px;
+  background: var(--page-plane);
+}
+header h1{
+  font-size: 17px; font-weight: 700; margin:0; line-height:1.3;
+}
+header .sub{ font-size: 12px; color: var(--text-muted); font-weight:400; margin-top:2px; }
+.theme-btn{
+  width:36px; height:36px; border-radius:10px; border:1px solid var(--border);
+  background: var(--surface-1); color: var(--text-primary);
+  font-size:16px; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; flex:none;
+}
+
+.tabs{
+  position: sticky; top: 56px; z-index: 19;
+  display:flex; gap:6px; padding: 6px; margin: 0 16px 12px;
+  background: var(--surface-1); border:1px solid var(--border); border-radius: 12px;
+}
+.tab-btn{
+  flex:1; border:none; background:transparent; color: var(--text-secondary);
+  font-size: 13px; font-weight:600; padding: 9px 6px; border-radius: 9px;
+  cursor:pointer; font-family:inherit;
+}
+.tab-btn[aria-selected="true"]{
+  background: var(--s1-blue); color: #fff;
+}
+
+main{ padding: 0 16px; }
+.tabpanel{ display:none; }
+.tabpanel.active{ display:block; }
+
+.kpi-row{
+  display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;
+}
+.stat-tile{
+  background: var(--surface-1); border:1px solid var(--border); border-radius: 14px;
+  padding: 12px 12px 10px;
+}
+.stat-tile .label{ font-size: 11.5px; color: var(--text-muted); font-weight:600; }
+.stat-tile .value{ font-size: 20px; font-weight:700; margin-top: 3px; letter-spacing:-0.2px; }
+.stat-tile .delta{ font-size: 11.5px; margin-top: 3px; font-weight:600; }
+.stat-tile .delta.good{ color: var(--good); }
+.stat-tile .delta.bad{ color: var(--critical); }
+.stat-tile .delta.neutral{ color: var(--text-muted); }
+.stat-tile svg.spark{ display:block; margin-top:6px; width:100%; height:28px; overflow:visible; }
+
+.card{
+  background: var(--surface-1); border:1px solid var(--border); border-radius: 14px;
+  padding: 14px; margin-bottom: 14px;
+}
+.card h2{ font-size: 13.5px; margin:0 0 10px; font-weight:700; }
+
+.seg-row{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom: 12px; }
+.seg-btn{
+  border:1px solid var(--border); background: var(--page-plane); color: var(--text-secondary);
+  font-size: 12px; font-weight:600; padding: 6px 10px; border-radius: 999px;
+  cursor:pointer; font-family:inherit;
+}
+.seg-btn[aria-pressed="true"]{ background: var(--s1-blue); border-color: var(--s1-blue); color:#fff; }
+
+.year-scroll{ display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; margin-bottom:12px; }
+.year-scroll .seg-btn{ flex: none; }
+
+.linechart-wrap{ position:relative; }
+svg.linechart{ width:100%; height:200px; display:block; overflow:visible; }
+.axis-label{ font-size:9.5px; fill: var(--text-muted); }
+.grid-line{ stroke: var(--gridline); stroke-width:1; }
+.baseline{ stroke: var(--baseline); stroke-width:1; }
+.line-path{ fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.dot{ }
+.hover-x{ stroke: var(--baseline); stroke-width:1; stroke-dasharray:2,3; opacity:0; transition: opacity .1s; }
+.tooltip{
+  position:absolute; pointer-events:none; background: var(--text-primary); color: var(--surface-1);
+  font-size:11px; font-weight:600; padding:5px 8px; border-radius:8px; white-space:nowrap;
+  transform: translate(-50%,-115%); opacity:0; transition: opacity .1s; z-index: 5;
+}
+
+.bar-list{ display:flex; flex-direction:column; gap:10px; }
+.bar-row{ }
+.bar-row .bar-top{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; gap:8px;}
+.bar-row .bar-name{ font-size:12px; font-weight:600; color: var(--text-primary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.bar-row .bar-value{ font-size:12px; font-weight:700; color: var(--text-secondary); flex:none; }
+.bar-track{ background: var(--gridline); border-radius: 6px; height: 14px; overflow:hidden; }
+.bar-fill{ height:100%; border-radius:6px; background: var(--s1-blue); min-width:3px; }
+
+.donut-wrap{ display:flex; align-items:center; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+svg.donut{ width:112px; height:112px; flex:none; }
+.donut-legend{ display:flex; flex-direction:column; gap:8px; font-size:12px; flex:1; min-width:150px; }
+.donut-legend .item{ display:flex; align-items:flex-start; gap:7px; }
+.donut-legend .dot{ width:9px; height:9px; border-radius:50%; flex:none; margin-top:4px; }
+.donut-legend .text{ display:flex; flex-direction:column; gap:1px; }
+.donut-legend .name{ color:var(--text-primary); font-weight:600; }
+.donut-legend .val{ color:var(--text-secondary); font-variant-numeric:tabular-nums; font-size:11.5px; }
+.subbreak-title{ font-size:11px; font-weight:700; color:var(--text-muted); margin:14px 0 8px; text-transform:uppercase; letter-spacing:.3px; }
+.bu-row-click{ cursor:pointer; }
+.bu-detail{ display:none; margin-top:10px; padding:12px; border-radius:10px; background:var(--page-plane); border:1px solid var(--border); cursor:default; }
+.bu-detail.show{ display:block; }
+.detail-note{ font-size:11px; color:var(--text-muted); margin-top:6px; line-height:1.5; }
+
+.ghg-callout{ display:flex; align-items:center; gap:12px; margin-bottom:14px; padding:12px; background:var(--page-plane); border-radius:12px; border:1px solid var(--border); }
+.ghg-callout .arrow{ font-size:24px; color:var(--good); flex:none; line-height:1; }
+.ghg-callout .big{ font-size:22px; font-weight:800; color:var(--good); line-height:1.1; }
+.ghg-callout .sub{ font-size:11px; color:var(--text-muted); margin-top:3px; }
+
+.sbt-badge{
+  display:inline-flex; align-items:center; gap:8px; background:var(--page-plane);
+  border:1px solid var(--border); border-radius:999px; padding:8px 14px; margin-bottom:14px;
+  font-size:12px; font-weight:700; color:var(--good); line-height:1.3;
+}
+
+.table-toggle{
+  margin-top: 12px; display:inline-flex; align-items:center; gap:6px;
+  border:1px solid var(--border); background:var(--page-plane); color:var(--text-secondary);
+  font-size:12px; font-weight:600; padding:7px 12px; border-radius:999px; cursor:pointer; font-family:inherit;
+}
+.data-table{ width:100%; border-collapse:collapse; margin-top:12px; font-size:12px; display:none; }
+.data-table.show{ display:table; }
+.data-table th, .data-table td{ text-align:left; padding:7px 6px; border-bottom:1px solid var(--gridline); }
+.data-table th{ color:var(--text-muted); font-weight:600; font-size:11px; }
+.data-table td.num{ text-align:right; font-variant-numeric: tabular-nums; }
+
+footer{ padding: 10px 16px 4px; font-size:11px; color: var(--text-muted); line-height:1.6; }
+
+@media (min-width:520px){
+  .kpi-row{ grid-template-columns: 1fr 1fr; }
+}
+@media (min-width:700px){
+  .app{ max-width: 920px; padding-left: 8px; padding-right: 8px; }
+  .kpi-row{ grid-template-columns: repeat(4, 1fr); }
+  .bar-list{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; }
+}
+@media (min-width:1200px){
+  .app{ max-width: 1240px; }
+  .bar-list{ grid-template-columns: 1fr 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <h1>CP Group &mdash; Energy &amp; GHG</h1>
+      <div class="sub">Performance 2020&ndash;2025</div>
+    </div>
+    <button class="theme-btn" id="themeBtn" aria-label="สลับธีมสว่าง/มืด">&#9789;</button>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab-btn" role="tab" aria-selected="true" data-tab="overview">ภาพรวม</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="bu">ตาม BU</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="biz">ตามกลุ่มธุรกิจ</button>
+  </nav>
+
+  <main>
+    <section class="tabpanel active" id="panel-overview">
+      <div class="kpi-row" id="kpiRow"></div>
+
+      <div class="card">
+        <h2>แนวโน้มรายปี</h2>
+        <div class="seg-row" id="metricSeg"></div>
+        <div class="linechart-wrap">
+          <svg class="linechart" id="mainChart" viewBox="0 0 340 200" preserveAspectRatio="none"></svg>
+          <div class="tooltip" id="chartTooltip"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>รายละเอียดแหล่งพลังงานและ GHG</h2>
+        <div class="year-scroll" id="ovDetailYearSeg"></div>
+        <div class="seg-row" id="ovDetailMetricSeg"></div>
+        <div id="ovDetailBody"></div>
+      </div>
+
+      <div class="card">
+        <h2>GHG Emissions เทียบเป้าหมาย (Science-based Target)</h2>
+        <div class="sbt-badge" id="sbtBadge"></div>
+        <div class="linechart-wrap">
+          <svg class="linechart" id="sbtBarChart" viewBox="0 0 340 220" preserveAspectRatio="none"></svg>
+          <div class="tooltip" id="sbtTooltip"></div>
+        </div>
+        <div class="donut-legend" id="sbtLegend" style="flex-direction:row;flex-wrap:wrap;gap:14px;margin-top:10px;"></div>
+        <div class="detail-note">แท่ง = Scope 1 (แดง) + Scope 2 (ส้ม) รวมเป็นยอด GHG ทั้งหมด &middot; เส้นประเหลือง = เป้าหมายรายปี &middot; แท่งขวาสุด = เป้าหมายปี 2573 &middot; แตะแท่งเพื่อดูตัวเลขเต็มและ %ลดสะสมจากปีฐาน 2564</div>
+      </div>
+    </section>
+
+    <section class="tabpanel" id="panel-bu">
+      <div class="card">
+        <h2>เปรียบเทียบตาม Business Unit</h2>
+        <div class="year-scroll" id="buYearSeg"></div>
+        <div class="seg-row" id="buMetricSeg"></div>
+        <div class="bar-list" id="buBarList"></div>
+        <button class="table-toggle" data-target="buTable">ดูตาราง</button>
+        <table class="data-table" id="buTable">
+          <thead><tr><th>BU</th><th class="num">ค่า</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="tabpanel" id="panel-biz">
+      <div class="card">
+        <h2>เปรียบเทียบตามกลุ่มธุรกิจ</h2>
+        <div class="year-scroll" id="bizYearSeg"></div>
+        <div class="seg-row" id="bizMetricSeg"></div>
+        <div class="bar-list" id="bizBarList"></div>
+        <button class="table-toggle" data-target="bizTable">ดูตาราง</button>
+        <table class="data-table" id="bizTable">
+          <thead><tr><th>กลุ่มธุรกิจ</th><th class="num">ค่า</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    ที่มา: Raw Data EN-GHG &mdash; 02706 Final Performance ENGHG 2020-2025.xlsx ·
+    หน่วย: Energy (GJ), GHG Scope 1+2 (tCO2e), Energy Cost (บาท) · คำนวณด้วยวิธีเดียวกับชีท GHG Summary / Energy by BU / Renewable Energy by BU / Energy Cost by BU (กรอง Scope_Level ยอดรวม, ตัด Duplicate_Flag, Renewable รวม RECs และ PPA)
+  </footer>
+</div>
+
+<script>
+const DATA = {"years":[2020,2021,2022,2023,2024,2025],"group":{"energy":[46621877.96,52589965.43,54800046.02,56798517.14,57426513.21,59941634.2],"renewable":[5468220.21,6955792.21,8599166.1,9582838.79,9173946.56,10795824.21],"ghg":[6421239.21,6442613.7,6314490.33,6159963.37,6141811.99,5926504.42],"cost":[31499411852.41,40078572613.1,50672454664.1,55560584590.21,57069891745.51,58099947790.46]},"bu":{"CP ALL":{"energy":[7923298.13,7226484.72,7908621.01,8879801.28,9349864.8,10760886.45],"renewable":[25700.24,42422.89,141740.83,522244.68,528234.78,512997.26],"ghg":[1242731.96,1023341.95,1165920.12,1570494.67,1596326.1,1356747.31],"cost":[6745235492.29,7032793344.12,9921499320.48,12127488154.35,13182500516.46,15308975223.19]},"Agro CHINA":{"energy":[7914056.66,10046651.24,10078244.86,9551485.56,10548331.01,10760519.59],"renewable":[181234.41,267744.56,389580.26,689341.36,551877.27,713112.3],"ghg":[1118850.28,1499512.64,1271493.78,844446.94,1008348.47,1044404.46],"cost":[4980271839.04,6504392576.24,5456914314.64,4871974052.55,6243048252.65,6294924003.54]},"CPF THAI":{"energy":[11071583.93,11270000.0,11175420.31,11524063.95,11316801.82,11581032.02],"renewable":[2853216.04,3068000.0,3343910.94,3716257.46,3793808.37,4061141.83],"ghg":[884782.51,863045.0,758017.35,748248.43,721402.02,724449.64],"cost":[5601124756.89,6389057176.72,7870188948.45,8930032541.76,8741841384.18,8760470154.62]},"CPF Oversea":{"energy":[6470719.28,7922298.9,7734475.46,7345920.89,7227577.32,7205960.1],"renewable":[1839735.45,2081241.77,2091699.37,1927581.96,1861339.62,1843326.92],"ghg":[919918.15,863929.29,809149.29,774620.98,748612.15,740559.09],"cost":[3326165163.12,4539638390.19,5162363701.19,5269293631.11,5347536183.1,4675022826.7]},"Lotus's":{"energy":[3891532.61,3706256.8,4297890.82,4301375.62,4438358.19,4667938.07],"renewable":[100538.27,162494.69,401740.42,585338.95,685446.71,852037.61],"ghg":[594107.92,542464.8,741671.28,614525.86,597322.21,593632.47],"cost":[3357794459.56,3640808307.05,5504692830.56,5884326616.18,6093045573.01,6493118356.47]},"TRUE COP":{"energy":[3232317.04,6107279.49,6300345.69,7270511.59,7026893.51,6582501.63],"renewable":[65448.59,817731.32,1534234.14,1362396.78,997025.89,1514735.32],"ghg":[823130.36,799680.18,723038.92,718331.66,670770.31,588984.88],"cost":[2749991273.24,6723417409.51,9928283459.43,10463429103.88,9520701637.72,7710622243.95]},"MAKRO":{"energy":[1421946.76,1507666.58,1617893.3,1759628.62,1979367.77,2142912.5],"renewable":[65573.14,130931.31,146089.25,184674.1,210415.12,253331.45],"ghg":[233607.41,252770.49,235407.05,250934.75,267494.32,316197.82],"cost":[1235800961.56,1504407092.0,2069590588.39,2443152739.16,2813658349.32,3189774758.5]},"Non Agro China":{"energy":[1163907.54,1268447.96,1411477.53,1740353.69,1076388.27,857019.26],"renewable":[2379.11,0.0,0.0,1907.85,12611.08,55029.9],"ghg":[285994.8,264903.22,249409.2,254554.41,143289.59,117246.03],"cost":[1124565630.3,1069547944.49,1179144856.06,1362899440.64,884480585.3,860174514.01]},"AGRO CPG":{"energy":[931013.02,914076.93,1322103.02,1572395.01,1618318.67,1521819.67],"renewable":[195487.56,200301.22,338907.04,350802.06,348050.22,399928.86],"ghg":[88369.8,85445.04,99778.08,125394.76,128833.86,114993.89],"cost":[617032667.33,646050553.97,985411920.19,1256663648.25,1297556570.88,865428843.9]},"PCG":{"energy":[697176.48,654830.87,817554.31,733413.19,761310.27,968263.69],"renewable":[0.0,0.0,0.0,0.0,1494.08,4616.16],"ghg":[46980.59,52011.86,57261.89,61347.5,67485.13,88333.74],"cost":[327167088.13,389701521.02,473519448.59,581717254.9,609636595.5,868598289.68]},"CPCRT":{"energy":[910029.83,1006583.64,918537.32,1032013.36,969189.49,1466014.81],"renewable":[124282.85,170802.17,202485.26,205897.83,143362.12,517868.37],"ghg":[72705.87,80753.7,69302.94,76139.43,72508.95,90821.8],"cost":[652361965.72,733706871.77,740329337.47,888181175.95,889683083.84,1062984757.63]},"CPPC":{"energy":[398138.88,380092.81,418629.08,378766.2,401819.22,403956.29],"renewable":[0.0,0.0,0.0,21828.73,21493.12,22799.12],"ghg":[44882.82,46914.13,53532.31,40213.49,43093.48,41653.48],"cost":[319053078.93,352683735.42,485567798.57,505040857.09,544226483.71,567389494.88]},"ASCEND THA":{"energy":[259092.93,282619.2,278705.18,286101.98,293781.13,395527.88],"renewable":[0.0,0.0,0.0,0.0,0.0,8613.63],"ghg":[31247.83,37251.15,34737.51,36215.79,37008.97,46464.23],"cost":[225628021.67,282910584.02,364793853.68,419670066.24,435659156.78,602508929.96]},"CP LAND":{"energy":[124710.02,113624.17,129947.28,147599.41,152845.92,133145.86],"renewable":[3822.51,4305.04,7106.26,8403.63,10272.41,9313.43],"ghg":[14077.7,13935.02,14790.98,16132.39,17219.09,15359.79],"cost":[100318401.37,105483796.58,153096519.18,189185856.68,194755522.42,184197242.49]},"AERA1":{"energy":[0.0,0.0,0.0,135753.29,11423.02,259089.64],"renewable":[0.0,0.0,0.0,0.0,0.0,0.0],"ghg":[0.0,0.0,0.0,15120.61,0.0,29209.84],"cost":[0.0,0.0,0.0,199405634.24,0.0,394772163.29]},"ALL NOW":{"energy":[0.0,0.0,0.0,2384.68,2726.73,5739.06],"renewable":[0.0,0.0,0.0,0.0,0.0,0.0],"ghg":[0.0,0.0,0.0,282.73,328.84,660.3],"cost":[0.0,0.0,0.0,3457592.04,4037437.15,8694126.79]},"ASCEND GROUP":{"energy":[2517.83,1886.4,1625.97,1162.43,0.0,0.0],"renewable":[0.0,0.0,0.0,0.0,0.0,0.0],"ghg":[308.14,284.0,230.44,216.36,0.0,0.0],"cost":[2182118.64,1886400.0,2156654.99,1683299.16,0.0,0.0]},"ALTERVIM":{"energy":[0.0,0.0,0.0,6406.62,9217.04,689.83],"renewable":[0.0,0.0,0.0,0.0,0.0,0.0],"ghg":[0.0,0.0,0.0,455.31,649.89,51.21],"cost":[0.0,0.0,0.0,5967162.6,8445596.58,758412.97]},"CHIA TAI":{"energy":[58003.78,56056.76,52865.02,61314.42,64514.33,44498.84],"renewable":[0.0,0.0,175.94,176.57,532.81,208.12],"ghg":[5422.36,5396.36,4944.43,5856.92,6444.2,4325.3],"cost":[51564301.51,52717380.63,56301205.51,71891808.28,73746382.0,54549367.12]},"FIT":{"energy":[31487.23,31487.23,0.0,0.0,0.0,0.0],"renewable":[9233.1,9233.1,0.0,0.0,0.0,0.0],"ghg":[1761.58,1771.79,0.0,0.0,0.0,0.0],"cost":[21119291.73,21469649.97,0.0,0.0,0.0,0.0]},"OTHER BU (CPG)":{"energy":[120346.0,93621.73,335709.86,68065.35,177784.71,184119.01],"renewable":[1568.94,584.14,1496.4,5986.82,7982.97,26763.93],"ghg":[12359.14,9203.07,25804.77,6430.38,14674.39,12409.13],"cost":[62035341.36,87899879.41,318599906.73,85123955.17,185332434.91,196984080.75]}},"biz":{"เกษตรอุตสาหกรรมและอาหาร":{"energy":[28482209.1,32282078.38,32517829.39,32199372.57,32907862.12,33952065.01],"renewable":[5203189.41,5797322.82,6366758.8,6911885.97,6721957.61,7563001.68],"ghg":[3183673.96,3498779.81,3123480.06,2676268.45,2796728.27,2849541.4],"cost":[15895860152.41,19629417855.92,21230596674.6,22374794969.9,23747274935.87,23149367738.08]},"กลุ่มธุรกิจอื่นๆ":{"energy":[228404.18,324713.46,223441.73,470353.38,190511.73,400428.56],"renewable":[3948.05,584.14,1063.75,7403.38,19852.58,62236.18],"ghg":[38513.85,44302.22,26936.49,51018.73,17837.82,37842.75],"cost":[162025918.06,229519666.67,168345195.5,448556779.97,151574541.42,514831046.19]},"อีคอมเมิร์ชและดิจิทัล":{"energy":[261610.76,284505.6,280331.14,289649.09,296507.86,401266.94],"renewable":[0.0,0.0,0.0,0.0,0.0,8613.63],"ghg":[31555.97,37535.15,34967.95,36714.89,37337.8,47124.53],"cost":[227810140.31,284796984.02,366950508.67,424810957.43,439696593.92,611203056.76]},"อสังหาริมทรัพย์":{"energy":[429216.99,497295.86,445874.21,647490.68,514685.29,469455.81],"renewable":[3822.51,4305.04,7106.26,8403.63,10272.41,27896.63],"ghg":[82402.78,106390.82,70816.46,87127.41,64165.78,62504.98],"cost":[374162604.65,437191628.3,410180160.61,564965816.8,474329549.52,524487626.92]},"ค้าปลีก":{"energy":[13982213.06,13055350.66,14743182.74,15914123.48,16369638.08,18012599.74],"renewable":[191811.65,335848.89,689570.5,1292257.73,1424096.61,1618366.32],"ghg":[2261293.59,1952945.33,2314297.69,2589804.2,2545836.93,2331081.71],"cost":[12084269570.92,12737889697.56,18302658842.02,21275431685.35,22623362685.48,25470878390.83]},"สื่อสารและโทรคมนาคม":{"energy":[3232317.04,6140681.15,6589386.81,7271755.28,7140273.57,6696047.78],"renewable":[65448.59,817731.32,1534666.79,1362888.07,997767.35,1515709.77],"ghg":[823130.36,802248.48,743991.68,718423.2,679135.18,597336.1],"cost":[2749991273.24,6754225612.71,10193723282.7,10464534713.88,9624083139.04,7815526479.82]},"การเงินและธนาคาร":{"energy":[0.0,0.0,0.0,0.0,0.0,0.0],"renewable":[0.0,0.0,0.0,0.0,0.0,0.0],"ghg":[0.0,0.0,0.0,0.0,0.0,0.0],"cost":[0.0,0.0,0.0,0.0,0.0,0.0]},"ยาและเวชภัณฑ์":{"energy":[5906.84,5340.32,0.0,5772.65,7034.55,9770.37],"renewable":[0.0,0.0,0.0,0.0,0.0,0.0],"ghg":[668.71,411.89,0.0,606.5,770.2,1072.94],"cost":[5292192.82,5531167.92,0.0,7489666.89,9570300.26,13653451.86]}},"detail":{"group":{"2020":{"energy":{"fossil":11108075.23,"renewable":5273424.38,"electricity":30240378.35,"fossil_types":{"NG":5381481.35,"Coal":1550590.6,"Diesel":2170541.79,"FuelOil":924963.78,"Petro":161755.15,"LPG":918742.56},"renewable_types":{"Biomass":4008681.15,"Biogas":1122607.77,"Solar":142135.46}},"ghg":{"s1_stationary":667192.29,"s1_fugitive":359368.12,"s1_mobile":125083.85,"s1_other":0.0,"s2":5269594.96},"renewable":{"solar_ppa":336931.3,"biomass":4008681.15,"biogas":1122607.77,"rec":0.0}},"2021":{"energy":{"fossil":12563305.51,"renewable":5921912.93,"electricity":34104746.99,"fossil_types":{"NG":6468908.7,"Coal":1171803.99,"Diesel":2469068.12,"FuelOil":963946.23,"Petro":322620.86,"LPG":1166957.62},"renewable_types":{"Biomass":4421445.35,"Biogas":1179939.92,"Solar":320527.66}},"ghg":{"s1_stationary":712687.79,"s1_fugitive":298210.44,"s1_mobile":147628.61,"s1_other":0.0,"s2":5284086.87},"renewable":{"solar_ppa":634406.94,"biomass":4421445.35,"biogas":1179939.92,"rec":720000.0}},"2022":{"energy":{"fossil":12506755.76,"renewable":6576792.55,"electricity":35716497.71,"fossil_types":{"NG":6379598.95,"Coal":868784.16,"Diesel":2638163.22,"FuelOil":999147.43,"Petro":360494.26,"LPG":1260567.74},"renewable_types":{"Biomass":5135158.38,"Biogas":1072164.25,"Solar":369469.92}},"ghg":{"s1_stationary":703218.64,"s1_fugitive":458372.11,"s1_mobile":135411.09,"s1_other":0.0,"s2":5017488.49},"renewable":{"solar_ppa":969843.48,"biomass":5135158.38,"biogas":1072164.25,"rec":1422000.0}},"2023":{"energy":{"fossil":12707449.84,"renewable":7325893.26,"electricity":36765174.03,"fossil_types":{"NG":6906087.01,"Coal":419308.72,"Diesel":2641936.62,"FuelOil":889677.33,"Petro":360856.37,"LPG":1489583.8},"renewable_types":{"Biomass":5463777.1,"Biogas":1215831.92,"Solar":646284.24}},"ghg":{"s1_stationary":694917.07,"s1_fugitive":714363.21,"s1_mobile":129194.14,"s1_other":0.0,"s2":4621488.95},"renewable":{"solar_ppa":1643229.77,"biomass":5463777.1,"biogas":1215831.92,"rec":1260000.0}},"2024":{"energy":{"fossil":11994409.03,"renewable":7158958.64,"electricity":38273145.54,"fossil_types":{"NG":6310736.42,"Coal":343092.95,"Diesel":2790535.36,"FuelOil":880329.75,"Petro":342021.39,"LPG":1327693.16},"renewable_types":{"Biomass":4915200.72,"Biogas":1465874.53,"Solar":777883.39}},"ghg":{"s1_stationary":664161.5,"s1_fugitive":659350.12,"s1_mobile":135477.74,"s1_other":0.0,"s2":4682822.63},"renewable":{"solar_ppa":1922622.62,"biomass":4915200.72,"biogas":1465874.53,"rec":870248.7}},"2025":{"energy":{"fossil":12149425.85,"renewable":8031228.41,"electricity":39760979.94,"fossil_types":{"Coal":314460.5,"NG":6322217.06,"Diesel":2658085.54,"Petro":270381.85,"FuelOil":991462.6,"LPG":1592818.3},"renewable_types":{"Biomass":5472436.07,"Biogas":1465805.18,"Solar":1092987.17}},"ghg":{"s1_stationary":670881.52,"s1_fugitive":680377.35,"s1_mobile":112976.24,"s1_other":11.61,"s2":4462257.7},"renewable":{"solar_ppa":2438278.15,"biomass":5472436.07,"biogas":1465805.18,"rec":1419304.82}}},"bu":{"CP ALL":{"2020":{"energy":{"fossil":520618.4,"renewable":1303.42,"electricity":7401376.32,"fossil_types":{"NG":62518.83,"Diesel":99455.87,"Petro":3644.72,"LPG":354998.98},"renewable_types":{"Solar":1303.42}},"ghg":{"s1_stationary":26024.84,"s1_fugitive":223439.25,"s1_mobile":7621.44,"s1_other":0.0,"s2":985646.43},"renewable":{"solar_ppa":25700.24,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":472309.99,"renewable":1054.15,"electricity":6753120.58,"fossil_types":{"NG":51339.98,"Diesel":13377.35,"Petro":3202.39,"LPG":404390.27},"renewable_types":{"Solar":1054.15}},"ghg":{"s1_stationary":39969.62,"s1_fugitive":158105.23,"s1_mobile":4484.99,"s1_other":0.0,"s2":820782.11},"renewable":{"solar_ppa":42422.89,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":543467.84,"renewable":47897.8,"electricity":7317255.37,"fossil_types":{"NG":63968.11,"Diesel":30294.27,"Petro":9241.23,"LPG":439964.23},"renewable_types":{"Solar":47897.8}},"ghg":{"s1_stationary":43258.51,"s1_fugitive":219838.42,"s1_mobile":3588.2,"s1_other":0.0,"s2":899234.99},"renewable":{"solar_ppa":141740.83,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":639765.95,"renewable":261023.62,"electricity":7979011.71,"fossil_types":{"NG":63737.75,"Diesel":38267.23,"Petro":10004.21,"LPG":527756.76},"renewable_types":{"Solar":261023.62}},"ghg":{"s1_stationary":48943.47,"s1_fugitive":564942.69,"s1_mobile":4888.2,"s1_other":0.0,"s2":951720.31},"renewable":{"solar_ppa":522244.68,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":393796.24,"renewable":270985.0,"electricity":8685083.56,"fossil_types":{"NG":54713.54,"Diesel":31267.23,"Petro":10045.39,"LPG":297770.08},"renewable_types":{"Solar":270985.0}},"ghg":{"s1_stationary":44045.97,"s1_fugitive":535248.68,"s1_mobile":4188.2,"s1_other":0.0,"s2":1012843.25},"renewable":{"solar_ppa":528234.78,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":802848.11,"renewable":258506.6,"electricity":9699531.74,"fossil_types":{"NG":59705.99,"Diesel":33561.0,"Petro":12673.0,"LPG":696908.12},"renewable_types":{"Solar":258506.6}},"ghg":{"s1_stationary":28862.3,"s1_fugitive":506687.62,"s1_mobile":18795.33,"s1_other":0.0,"s2":802402.06},"renewable":{"solar_ppa":512997.26,"biomass":0.0,"biogas":0.0,"rec":0.0}}},"Agro CHINA":{"2020":{"energy":{"fossil":3947116.58,"renewable":159578.84,"electricity":3807361.25,"fossil_types":{"NG":2755409.74,"Coal":532072.91,"Diesel":486163.75,"Petro":51361.77,"LPG":122108.4},"renewable_types":{"Biomass":132498.68,"Biogas":2375.55,"Solar":24704.6}},"ghg":{"s1_stationary":223034.93,"s1_fugitive":768.89,"s1_mobile":32904.51,"s1_other":0.0,"s2":862141.95},"renewable":{"solar_ppa":46360.17,"biomass":132498.68,"biogas":2375.55,"rec":0.0}},"2021":{"energy":{"fossil":4880205.88,"renewable":232903.68,"electricity":4933541.68,"fossil_types":{"NG":3578216.13,"Coal":345980.06,"Diesel":743825.14,"FuelOil":13928.63,"Petro":172641.0,"LPG":25614.92},"renewable_types":{"Biomass":219218.26,"Biogas":7099.69,"Solar":6585.73}},"ghg":{"s1_stationary":261119.15,"s1_fugitive":768.89,"s1_mobile":53757.25,"s1_other":0.0,"s2":1183867.35},"renewable":{"solar_ppa":41426.61,"biomass":219218.26,"biogas":7099.69,"rec":0.0}},"2022":{"energy":{"fossil":4575811.83,"renewable":385061.62,"electricity":5117371.41,"fossil_types":{"NG":3524080.66,"Coal":450185.65,"Diesel":440611.54,"Petro":129134.62,"LPG":31799.35},"renewable_types":{"Biomass":359705.96,"Biogas":1297.66,"Solar":24058.0}},"ghg":{"s1_stationary":261984.99,"s1_fugitive":488.84,"s1_mobile":23504.34,"s1_other":0.0,"s2":985515.61},"renewable":{"solar_ppa":28576.64,"biomass":359705.96,"biogas":1297.66,"rec":0.0}},"2023":{"energy":{"fossil":5034046.3,"renewable":678635.4,"electricity":3838803.86,"fossil_types":{"NG":4308476.75,"Coal":167172.58,"Diesel":310050.57,"FuelOil":4.13,"Petro":143627.73,"LPG":104714.55},"renewable_types":{"Biomass":585374.76,"Biogas":44257.59,"Solar":49003.04}},"ghg":{"s1_stationary":272374.82,"s1_fugitive":3370.87,"s1_mobile":26308.65,"s1_other":0.0,"s2":542392.6},"renewable":{"solar_ppa":59709.01,"biomass":585374.76,"biogas":44257.59,"rec":0.0}},"2024":{"energy":{"fossil":4721397.65,"renewable":524676.46,"electricity":5302256.89,"fossil_types":{"NG":4007188.43,"Coal":92412.86,"Diesel":432557.18,"FuelOil":5.37,"Petro":149824.87,"LPG":39408.94},"renewable_types":{"Biomass":350906.53,"Biogas":94547.53,"Solar":79222.4}},"ghg":{"s1_stationary":252147.18,"s1_fugitive":6966.66,"s1_mobile":27060.29,"s1_other":0.0,"s2":722174.35},"renewable":{"solar_ppa":106423.22,"biomass":350906.53,"biogas":94547.53,"rec":0.0}},"2025":{"energy":{"fossil":4445681.24,"renewable":668588.22,"electricity":5646250.13,"fossil_types":{"NG":3853332.49,"Coal":28886.25,"Diesel":430076.6,"Petro":104070.11,"LPG":29315.8},"renewable_types":{"Biomass":408047.39,"Biogas":53467.59,"Solar":207073.24}},"ghg":{"s1_stationary":224646.68,"s1_fugitive":3389.29,"s1_mobile":36528.45,"s1_other":0.0,"s2":779840.04},"renewable":{"solar_ppa":251597.33,"biomass":408047.39,"biogas":53467.59,"rec":0.0}}},"CPF THAI":{"2020":{"energy":{"fossil":3348869.46,"renewable":2853216.04,"electricity":4869498.44,"fossil_types":{"NG":1440993.0,"Coal":553304.87,"Diesel":245251.67,"FuelOil":811332.42,"Petro":14390.61,"LPG":283596.89},"renewable_types":{"Biomass":1796372.31,"Biogas":1041583.44,"Solar":15260.29}},"ghg":{"s1_stationary":238281.51,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":646501.0},"renewable":{"solar_ppa":15260.29,"biomass":1796372.31,"biogas":1041583.44,"rec":0.0}},"2021":{"energy":{"fossil":3180000.0,"renewable":3068000.0,"electricity":5022000.0,"fossil_types":{"NG":1340000.0,"Coal":420000.0,"Diesel":230000.0,"FuelOil":830000.0,"Petro":10000.0,"LPG":350000.0},"renewable_types":{"Biomass":1948698.42,"Biogas":1020000.0,"Solar":99301.58}},"ghg":{"s1_stationary":221960.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":641085.0},"renewable":{"solar_ppa":99301.58,"biomass":1948698.42,"biogas":1020000.0,"rec":0.0}},"2022":{"energy":{"fossil":2882873.18,"renewable":3343910.94,"electricity":4948636.19,"fossil_types":{"NG":1284758.74,"Coal":105218.13,"Diesel":210383.29,"FuelOil":864575.33,"Petro":13864.16,"LPG":404073.54},"renewable_types":{"Biomass":2311675.38,"Biogas":959326.5,"Solar":72909.05}},"ghg":{"s1_stationary":183986.2,"s1_fugitive":0.0,"s1_mobile":9597.15,"s1_other":0.0,"s2":564434.0},"renewable":{"solar_ppa":72909.05,"biomass":2311675.38,"biogas":959326.5,"rec":0.0}},"2023":{"energy":{"fossil":2646398.46,"renewable":3716257.46,"electricity":5161408.03,"fossil_types":{"NG":1196741.3,"Diesel":206784.21,"FuelOil":780218.44,"Petro":12997.95,"LPG":449656.56},"renewable_types":{"Biomass":2591513.85,"Biogas":1031544.6,"Solar":93199.01}},"ghg":{"s1_stationary":164601.27,"s1_fugitive":0.0,"s1_mobile":10804.16,"s1_other":0.0,"s2":572843.0},"renewable":{"solar_ppa":93199.01,"biomass":2591513.85,"biogas":1031544.6,"rec":0.0}},"2024":{"energy":{"fossil":2531351.41,"renewable":3793808.37,"electricity":4991642.04,"fossil_types":{"NG":1007101.99,"Diesel":198598.25,"FuelOil":740164.92,"Petro":12014.56,"LPG":573471.69},"renewable_types":{"Biomass":2471504.75,"Biogas":1196621.97,"Solar":125681.65}},"ghg":{"s1_stationary":158229.55,"s1_fugitive":0.0,"s1_mobile":10466.47,"s1_other":0.0,"s2":552706.0},"renewable":{"solar_ppa":125681.65,"biomass":2471504.75,"biogas":1196621.97,"rec":0.0}},"2025":{"energy":{"fossil":2692995.57,"renewable":4061141.83,"electricity":4826894.61,"fossil_types":{"NG":1006270.73,"Diesel":181767.29,"Petro":11583.39,"FuelOil":862531.76,"LPG":630842.41},"renewable_types":{"Biomass":2595482.44,"Biogas":1252391.25,"Solar":213268.15}},"ghg":{"s1_stationary":177658.99,"s1_fugitive":29419.31,"s1_mobile":0.0,"s1_other":0.0,"s2":517371.34},"renewable":{"solar_ppa":213268.15,"biomass":2595482.44,"biogas":1252391.25,"rec":0.0}}},"CPF Oversea":{"2020":{"energy":{"fossil":1443626.83,"renewable":1839735.45,"electricity":3187357.0,"fossil_types":{"NG":453194.78,"Coal":460369.85,"Diesel":374639.02,"FuelOil":105201.96,"Petro":14819.12,"LPG":35402.08},"renewable_types":{"Biomass":1772307.17,"Biogas":57856.91,"Solar":9571.37}},"ghg":{"s1_stationary":123790.17,"s1_fugitive":0.0,"s1_mobile":9900.86,"s1_other":0.0,"s2":786227.12},"renewable":{"solar_ppa":9571.37,"biomass":1772307.17,"biogas":57856.91,"rec":0.0}},"2021":{"energy":{"fossil":2011263.94,"renewable":2081241.77,"electricity":3829793.2,"fossil_types":{"NG":810889.95,"Coal":360033.74,"Diesel":425625.13,"FuelOil":115254.3,"Petro":23127.5,"LPG":276333.32},"renewable_types":{"Biomass":1889565.76,"Biogas":136763.54,"Solar":54912.47}},"ghg":{"s1_stationary":126370.68,"s1_fugitive":0.0,"s1_mobile":15268.96,"s1_other":0.0,"s2":722289.65},"renewable":{"solar_ppa":54912.47,"biomass":1889565.76,"biogas":136763.54,"rec":0.0}},"2022":{"energy":{"fossil":1845187.84,"renewable":2091699.37,"electricity":3797588.25,"fossil_types":{"NG":629609.03,"Coal":313380.38,"Diesel":460866.47,"FuelOil":130327.28,"Petro":23667.44,"LPG":287337.25},"renewable_types":{"Biomass":1924396.02,"Biogas":95986.64,"Solar":71316.7}},"ghg":{"s1_stationary":113223.11,"s1_fugitive":0.0,"s1_mobile":18539.88,"s1_other":0.0,"s2":677386.3},"renewable":{"solar_ppa":71316.7,"biomass":1924396.02,"biogas":95986.64,"rec":0.0}},"2023":{"energy":{"fossil":1747666.31,"renewable":1927581.96,"electricity":3670672.63,"fossil_types":{"NG":562626.67,"Coal":249136.44,"Diesel":528914.61,"FuelOil":101773.6,"Petro":24757.54,"LPG":280457.45},"renewable_types":{"Biomass":1713542.69,"Biogas":137096.76,"Solar":76942.51}},"ghg":{"s1_stationary":98787.99,"s1_fugitive":0.0,"s1_mobile":24767.55,"s1_other":0.0,"s2":651065.43},"renewable":{"solar_ppa":76942.51,"biomass":1713542.69,"biogas":137096.76,"rec":0.0}},"2024":{"energy":{"fossil":1714445.88,"renewable":1861339.62,"electricity":3651791.82,"fossil_types":{"NG":564114.98,"Coal":248519.18,"Diesel":466117.23,"FuelOil":133974.75,"Petro":23700.59,"LPG":278019.16},"renewable_types":{"Biomass":1592442.69,"Biogas":171476.33,"Solar":97420.61}},"ghg":{"s1_stationary":95036.69,"s1_fugitive":0.0,"s1_mobile":26459.73,"s1_other":0.0,"s2":627115.72},"renewable":{"solar_ppa":97420.61,"biomass":1592442.69,"biogas":171476.33,"rec":0.0}},"2025":{"energy":{"fossil":1778712.28,"renewable":1843326.92,"electricity":3583920.9,"fossil_types":{"NG":802657.47,"Coal":285574.25,"Diesel":501993.92,"FuelOil":128384.01,"Petro":29636.06,"LPG":30466.58},"renewable_types":{"Biomass":1544877.04,"Biogas":156864.86,"Solar":141585.02}},"ghg":{"s1_stationary":127133.99,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":613425.1},"renewable":{"solar_ppa":141585.02,"biomass":1544877.04,"biogas":156864.86,"rec":0.0}}},"Lotus's":{"2020":{"energy":{"fossil":65239.8,"renewable":17367.97,"electricity":3808924.84,"fossil_types":{"Diesel":6539.82,"Petro":27954.87,"LPG":30745.11},"renewable_types":{"Solar":17367.97}},"ghg":{"s1_stationary":8.12,"s1_fugitive":75381.12,"s1_mobile":6060.6,"s1_other":0.0,"s2":512658.08},"renewable":{"solar_ppa":100538.27,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":115812.1,"renewable":55471.74,"electricity":3534972.96,"fossil_types":{"Diesel":47794.18,"Petro":40365.46,"LPG":27652.46},"renewable_types":{"Solar":55471.74}},"ghg":{"s1_stationary":72.22,"s1_fugitive":62320.18,"s1_mobile":8302.26,"s1_other":0.0,"s2":471770.14},"renewable":{"solar_ppa":162494.69,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":165798.79,"renewable":41936.4,"electricity":4090155.63,"fossil_types":{"Diesel":86230.73,"Petro":44134.85,"LPG":35433.21},"renewable_types":{"Biomass":10137.6,"Solar":31798.8}},"ghg":{"s1_stationary":13563.25,"s1_fugitive":175782.79,"s1_mobile":0.0,"s1_other":0.0,"s2":552325.24},"renewable":{"solar_ppa":391602.82,"biomass":10137.6,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":264226.46,"renewable":66263.33,"electricity":3970885.83,"fossil_types":{"Diesel":195841.23,"Petro":45189.64,"LPG":23195.59},"renewable_types":{"Biomass":18774.17,"Solar":47489.16}},"ghg":{"s1_stationary":14185.02,"s1_fugitive":86261.67,"s1_mobile":0.0,"s1_other":0.0,"s2":514079.17},"renewable":{"solar_ppa":566564.78,"biomass":18774.17,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":239112.14,"renewable":64959.7,"electricity":4134286.35,"fossil_types":{"Diesel":169645.5,"Petro":45604.22,"LPG":23862.42},"renewable_types":{"Biomass":17529.86,"Solar":47429.84}},"ghg":{"s1_stationary":19884.83,"s1_fugitive":62535.1,"s1_mobile":0.0,"s1_other":0.0,"s2":514902.28},"renewable":{"solar_ppa":667916.85,"biomass":17529.86,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":241499.54,"renewable":85089.98,"electricity":4341348.55,"fossil_types":{"Diesel":173143.34,"Petro":42688.63,"LPG":25667.57},"renewable_types":{"Biomass":30702.98,"Solar":54387.0}},"ghg":{"s1_stationary":19095.41,"s1_fugitive":50878.36,"s1_mobile":0.0,"s1_other":0.0,"s2":523658.7},"renewable":{"solar_ppa":821334.63,"biomass":30702.98,"biogas":0.0,"rec":0.0}}},"TRUE COP":{"2020":{"energy":{"fossil":145115.81,"renewable":65448.59,"electricity":3021752.64,"fossil_types":{"Diesel":137901.55,"Petro":7214.26},"renewable_types":{"Solar":65448.59}},"ghg":{"s1_stationary":0.0,"s1_fugitive":10160.79,"s1_mobile":16264.25,"s1_other":0.0,"s2":796705.33},"renewable":{"solar_ppa":65448.59,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":134625.68,"renewable":97731.32,"electricity":5874922.49,"fossil_types":{"Diesel":101722.91,"Petro":32902.77},"renewable_types":{"Solar":97731.32}},"ghg":{"s1_stationary":0.0,"s1_fugitive":11958.0,"s1_mobile":9294.96,"s1_other":0.0,"s2":778427.23},"renewable":{"solar_ppa":97731.32,"biomass":0.0,"biogas":0.0,"rec":720000.0}},"2022":{"energy":{"fossil":173789.72,"renewable":112234.14,"electricity":6014321.83,"fossil_types":{"Diesel":83142.02,"Petro":90647.7},"renewable_types":{"Solar":112234.14}},"ghg":{"s1_stationary":0.0,"s1_fugitive":15141.36,"s1_mobile":11630.26,"s1_other":0.0,"s2":696267.29},"renewable":{"solar_ppa":112234.14,"biomass":0.0,"biogas":0.0,"rec":1422000.0}},"2023":{"energy":{"fossil":159946.85,"renewable":102396.78,"electricity":7008167.96,"fossil_types":{"Diesel":72341.8,"Petro":87605.05},"renewable_types":{"Solar":102396.78}},"ghg":{"s1_stationary":0.0,"s1_fugitive":5246.39,"s1_mobile":10531.4,"s1_other":0.0,"s2":702553.86},"renewable":{"solar_ppa":102396.78,"biomass":0.0,"biogas":0.0,"rec":1260000.0}},"2024":{"energy":{"fossil":65515.88,"renewable":126777.19,"electricity":6834600.44,"fossil_types":{"Diesel":44926.87,"Petro":20589.01},"renewable_types":{"Solar":126777.19}},"ghg":{"s1_stationary":0.0,"s1_fugitive":5132.67,"s1_mobile":4588.65,"s1_other":0.0,"s2":661048.99},"renewable":{"solar_ppa":126777.19,"biomass":0.0,"biogas":0.0,"rec":870248.7}},"2025":{"energy":{"fossil":53797.91,"renewable":135575.32,"electricity":6393128.4,"fossil_types":{"Diesel":43390.7,"Petro":10407.21},"renewable_types":{"Solar":135575.32}},"ghg":{"s1_stationary":3805.22,"s1_fugitive":3002.23,"s1_mobile":0.0,"s1_other":0.0,"s2":582177.43},"renewable":{"solar_ppa":135575.32,"biomass":0.0,"biogas":0.0,"rec":1379160.0}}},"MAKRO":{"2020":{"energy":{"fossil":33882.16,"renewable":0.0,"electricity":1388064.6,"fossil_types":{"Diesel":23332.52,"Petro":10116.47,"LPG":433.17},"renewable_types":{}},"ghg":{"s1_stationary":131.25,"s1_fugitive":48494.31,"s1_mobile":1339.07,"s1_other":0.0,"s2":183642.78},"renewable":{"solar_ppa":65573.14,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":40255.65,"renewable":284.6,"electricity":1467126.33,"fossil_types":{"Diesel":29468.13,"Petro":8228.96,"LPG":2558.56},"renewable_types":{"Solar":284.6}},"ghg":{"s1_stationary":173.48,"s1_fugitive":63934.38,"s1_mobile":3077.44,"s1_other":0.0,"s2":185585.19},"renewable":{"solar_ppa":130931.31,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":50145.89,"renewable":3881.39,"electricity":1563866.02,"fossil_types":{"Diesel":37846.07,"Petro":9370.93,"LPG":2928.89},"renewable_types":{"Biomass":3597.57,"Solar":283.82}},"ghg":{"s1_stationary":3746.06,"s1_fugitive":45503.39,"s1_mobile":0.0,"s1_other":0.0,"s2":186157.6},"renewable":{"solar_ppa":142491.68,"biomass":3597.57,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":66421.48,"renewable":4804.43,"electricity":1688402.71,"fossil_types":{"Diesel":48755.09,"Petro":13372.03,"LPG":4294.36},"renewable_types":{"Biomass":4506.42,"Solar":298.01}},"ghg":{"s1_stationary":5009.85,"s1_fugitive":45905.13,"s1_mobile":0.0,"s1_other":0.0,"s2":200019.77},"renewable":{"solar_ppa":180167.68,"biomass":4506.42,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":70346.38,"renewable":7841.69,"electricity":1901179.7,"fossil_types":{"Diesel":51549.17,"Petro":14540.35,"LPG":4256.86},"renewable_types":{"Biomass":4766.41,"Solar":3075.28}},"ghg":{"s1_stationary":5269.22,"s1_fugitive":37255.48,"s1_mobile":0.0,"s1_other":0.0,"s2":224969.62},"renewable":{"solar_ppa":205648.71,"biomass":4766.41,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":83309.72,"renewable":7915.14,"electricity":2051687.64,"fossil_types":{"Diesel":55546.65,"Petro":19996.7,"LPG":7766.37},"renewable_types":{"Biomass":5687.75,"Solar":2227.39}},"ghg":{"s1_stationary":6381.26,"s1_fugitive":69075.87,"s1_mobile":0.0,"s1_other":0.0,"s2":240740.69},"renewable":{"solar_ppa":247643.7,"biomass":5687.75,"biogas":0.0,"rec":0.0}}},"Non Agro China":{"2020":{"energy":{"fossil":33955.6,"renewable":2379.11,"electricity":1127572.83,"fossil_types":{"NG":27515.85,"Diesel":433.65,"Petro":5899.62,"LPG":106.48},"renewable_types":{"Solar":2379.11}},"ghg":{"s1_stationary":1535.69,"s1_fugitive":1123.76,"s1_mobile":429.76,"s1_other":0.0,"s2":282905.59},"renewable":{"solar_ppa":2379.11,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":208519.33,"renewable":0.0,"electricity":1059928.63,"fossil_types":{"NG":185469.95,"Diesel":16212.69,"Petro":5933.02,"LPG":903.67},"renewable_types":{}},"ghg":{"s1_stationary":10604.49,"s1_fugitive":1123.76,"s1_mobile":1472.74,"s1_other":0.0,"s2":251702.23},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":144979.4,"renewable":0.0,"electricity":1266498.13,"fossil_types":{"NG":124378.32,"Diesel":16676.18,"Petro":3485.67,"LPG":439.23},"renewable_types":{}},"ghg":{"s1_stationary":6984.85,"s1_fugitive":816.2,"s1_mobile":1546.35,"s1_other":0.0,"s2":240061.8},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":191933.34,"renewable":1907.85,"electricity":1546512.5,"fossil_types":{"NG":169230.62,"Coal":1740.8,"Diesel":14909.25,"FuelOil":4.13,"Petro":5539.02,"LPG":509.53},"renewable_types":{"Solar":1907.85}},"ghg":{"s1_stationary":9753.56,"s1_fugitive":0.0,"s1_mobile":1453.32,"s1_other":0.0,"s2":243347.54},"renewable":{"solar_ppa":1907.85,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":101758.38,"renewable":7163.01,"electricity":967466.89,"fossil_types":{"NG":50584.92,"Diesel":12227.49,"Petro":37782.01,"LPG":1163.95},"renewable_types":{"Solar":7163.01}},"ghg":{"s1_stationary":2961.11,"s1_fugitive":0.32,"s1_mobile":3292.83,"s1_other":0.0,"s2":137035.34},"renewable":{"solar_ppa":12611.08,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":19374.39,"renewable":34655.65,"electricity":802989.22,"fossil_types":{"NG":12013.41,"Diesel":5685.32,"Petro":1663.52,"LPG":12.13},"renewable_types":{"Solar":34655.65}},"ghg":{"s1_stationary":723.07,"s1_fugitive":23.7,"s1_mobile":479.07,"s1_other":0.0,"s2":116020.19},"renewable":{"solar_ppa":36446.7,"biomass":0.0,"biogas":0.0,"rec":18583.2}}},"AGRO CPG":{"2020":{"energy":{"fossil":285024.47,"renewable":195487.56,"electricity":450500.99,"fossil_types":{"NG":46914.04,"Diesel":190379.84,"Petro":4088.84,"LPG":43641.75},"renewable_types":{"Biomass":174000.5,"Biogas":20791.86,"Solar":695.19}},"ghg":{"s1_stationary":15361.18,"s1_fugitive":0.0,"s1_mobile":4875.13,"s1_other":0.0,"s2":68133.48},"renewable":{"solar_ppa":695.19,"biomass":174000.5,"biogas":20791.86,"rec":0.0}},"2021":{"energy":{"fossil":308277.45,"renewable":200301.22,"electricity":405498.26,"fossil_types":{"NG":67571.25,"Diesel":205616.56,"Petro":3807.48,"LPG":31282.16},"renewable_types":{"Biomass":183943.34,"Biogas":16076.69,"Solar":281.19}},"ghg":{"s1_stationary":17563.18,"s1_fugitive":0.0,"s1_mobile":4171.52,"s1_other":0.0,"s2":63710.34},"renewable":{"solar_ppa":281.19,"biomass":183943.34,"biogas":16076.69,"rec":0.0}},"2022":{"energy":{"fossil":580823.93,"renewable":338907.04,"electricity":402372.05,"fossil_types":{"NG":126872.93,"Diesel":411983.5,"Petro":3928.69,"LPG":38038.81},"renewable_types":{"Biomass":323163.81,"Biogas":15553.44,"Solar":189.79}},"ghg":{"s1_stationary":37691.8,"s1_fugitive":284.8,"s1_mobile":3341.38,"s1_other":0.0,"s2":58460.09},"renewable":{"solar_ppa":189.79,"biomass":323163.81,"biogas":15553.44,"rec":0.0}},"2023":{"energy":{"fossil":793464.13,"renewable":350802.06,"electricity":428128.82,"fossil_types":{"NG":169481.53,"Diesel":592228.19,"FuelOil":6.02,"Petro":1389.19,"LPG":30359.21},"renewable_types":{"Biomass":347869.1,"Biogas":2932.96}},"ghg":{"s1_stationary":49383.04,"s1_fugitive":3577.11,"s1_mobile":6839.86,"s1_other":0.0,"s2":65594.75},"renewable":{"solar_ppa":0.0,"biomass":347869.1,"biogas":2932.96,"rec":0.0}},"2024":{"energy":{"fossil":842542.71,"renewable":348050.22,"electricity":427725.74,"fossil_types":{"NG":185184.38,"Diesel":619382.96,"Petro":3576.4,"LPG":34398.97},"renewable_types":{"Biomass":343895.95,"Biogas":3228.7,"Solar":925.57}},"ghg":{"s1_stationary":53981.69,"s1_fugitive":2531.65,"s1_mobile":5511.74,"s1_other":0.0,"s2":66808.78},"renewable":{"solar_ppa":925.57,"biomass":343895.95,"biogas":3228.7,"rec":0.0}},"2025":{"energy":{"fossil":672152.09,"renewable":399928.86,"electricity":449738.71,"fossil_types":{"NG":109884.49,"Diesel":468893.0,"Petro":5889.66,"LPG":87484.93},"renewable_types":{"Biomass":394037.22,"Biogas":3081.48,"Solar":2810.16}},"ghg":{"s1_stationary":40032.58,"s1_fugitive":2027.89,"s1_mobile":7498.53,"s1_other":0.0,"s2":65434.89},"renewable":{"solar_ppa":2810.16,"biomass":394037.22,"biogas":3081.48,"rec":0.0}}},"PCG":{"2020":{"energy":{"fossil":587773.26,"renewable":0.0,"electricity":109403.22,"fossil_types":{"NG":533818.92,"Diesel":33722.21,"Petro":5772.79,"LPG":14459.34},"renewable_types":{}},"ghg":{"s1_stationary":30496.18,"s1_fugitive":0.0,"s1_mobile":3173.68,"s1_other":0.0,"s2":13310.72},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":466827.24,"renewable":0.0,"electricity":188003.63,"fossil_types":{"NG":394549.62,"Diesel":54784.33,"Petro":7624.54,"LPG":9868.75},"renewable_types":{}},"ghg":{"s1_stationary":22688.68,"s1_fugitive":0.0,"s1_mobile":4412.7,"s1_other":0.0,"s2":24910.48},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":665887.45,"renewable":0.0,"electricity":151666.86,"fossil_types":{"NG":584943.29,"Diesel":57663.81,"Petro":8055.93,"LPG":15224.42},"renewable_types":{}},"ghg":{"s1_stationary":33313.71,"s1_fugitive":1.38,"s1_mobile":4946.32,"s1_other":0.0,"s2":19000.49},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":484923.19,"renewable":0.0,"electricity":248490.0,"fossil_types":{"NG":392239.69,"Diesel":65191.84,"Petro":8233.96,"LPG":19257.7},"renewable_types":{}},"ghg":{"s1_stationary":22685.79,"s1_fugitive":2887.92,"s1_mobile":5540.84,"s1_other":0.0,"s2":30232.95},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":503192.02,"renewable":1494.08,"electricity":256624.17,"fossil_types":{"NG":398295.47,"Diesel":71133.71,"Petro":9082.51,"LPG":24680.34},"renewable_types":{"Solar":1494.08}},"ghg":{"s1_stationary":23309.47,"s1_fugitive":6677.06,"s1_mobile":6311.64,"s1_other":0.0,"s2":31186.97},"renewable":{"solar_ppa":1494.08,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":565353.02,"renewable":4616.16,"electricity":398294.52,"fossil_types":{"NG":437786.64,"Diesel":70244.81,"Petro":18023.5,"LPG":39298.07},"renewable_types":{"Solar":4616.16}},"ghg":{"s1_stationary":26521.4,"s1_fugitive":13049.13,"s1_mobile":6836.95,"s1_other":0.0,"s2":41926.27},"renewable":{"solar_ppa":4616.16,"biomass":0.0,"biogas":0.0,"rec":0.0}}},"CPCRT":{"2020":{"energy":{"fossil":517591.01,"renewable":124282.85,"electricity":268155.97,"fossil_types":{"Coal":4842.96,"Diesel":481471.28,"Petro":1266.79,"LPG":30009.98},"renewable_types":{"Biomass":124269.38,"Solar":13.48}},"ghg":{"s1_stationary":4080.61,"s1_fugitive":0.0,"s1_mobile":34864.6,"s1_other":0.0,"s2":33760.66},"renewable":{"solar_ppa":13.48,"biomass":124269.38,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":583007.72,"renewable":170802.17,"electricity":252773.75,"fossil_types":{"Coal":45790.19,"Diesel":501381.09,"Petro":408.63,"LPG":35427.81},"renewable_types":{"Biomass":170786.47,"Solar":15.7}},"ghg":{"s1_stationary":7875.81,"s1_fugitive":0.0,"s1_mobile":36711.22,"s1_other":0.0,"s2":36166.67},"renewable":{"solar_ppa":15.7,"biomass":170786.47,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":489342.94,"renewable":202485.26,"electricity":226709.12,"fossil_types":{"Diesel":488768.68,"Petro":369.06,"LPG":205.2},"renewable_types":{"Biomass":202476.73,"Solar":8.53}},"ghg":{"s1_stationary":1767.39,"s1_fugitive":471.61,"s1_mobile":35381.95,"s1_other":0.0,"s2":31681.99},"renewable":{"solar_ppa":8.53,"biomass":202476.73,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":552313.69,"renewable":205897.83,"electricity":273801.83,"fossil_types":{"Coal":1258.9,"Diesel":507311.76,"Petro":2742.34,"LPG":41000.69},"renewable_types":{"Biomass":202192.08,"Solar":3705.76}},"ghg":{"s1_stationary":5710.69,"s1_fugitive":619.25,"s1_mobile":33370.08,"s1_other":0.0,"s2":36439.4},"renewable":{"solar_ppa":3705.76,"biomass":202192.08,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":569474.2,"renewable":137296.93,"electricity":262418.35,"fossil_types":{"Coal":2160.92,"Diesel":525420.42,"Petro":3618.93,"LPG":38273.94},"renewable_types":{"Biomass":133885.86,"Solar":3411.07}},"ghg":{"s1_stationary":5444.47,"s1_fugitive":28.43,"s1_mobile":34770.73,"s1_other":0.0,"s2":32265.32},"renewable":{"solar_ppa":9476.26,"biomass":133885.86,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":593697.57,"renewable":517868.37,"electricity":354448.88,"fossil_types":{"Diesel":552177.05,"Petro":1087.72,"LPG":40432.8},"renewable_types":{"Biomass":493601.25,"Solar":24267.11}},"ghg":{"s1_stationary":5295.92,"s1_fugitive":1.38,"s1_mobile":39777.42,"s1_other":0.0,"s2":45747.09},"renewable":{"solar_ppa":24267.11,"biomass":493601.25,"biogas":0.0,"rec":0.0}}},"CPPC":{"2020":{"energy":{"fossil":55528.62,"renewable":0.0,"electricity":342610.26,"fossil_types":{"NG":50190.73,"Diesel":4626.84,"Petro":1.18,"LPG":709.87},"renewable_types":{}},"ghg":{"s1_stationary":2826.39,"s1_fugitive":0.0,"s1_mobile":372.18,"s1_other":0.0,"s2":41684.25},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":46191.71,"renewable":0.0,"electricity":333901.1,"fossil_types":{"NG":40871.81,"Diesel":4384.19,"Petro":1.2,"LPG":934.51},"renewable_types":{}},"ghg":{"s1_stationary":2309.15,"s1_fugitive":0.0,"s1_mobile":363.08,"s1_other":0.0,"s2":44241.9},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":46214.22,"renewable":0.0,"electricity":372414.87,"fossil_types":{"NG":40987.87,"Diesel":4015.57,"Petro":316.2,"LPG":894.58},"renewable_types":{}},"ghg":{"s1_stationary":2358.43,"s1_fugitive":0.54,"s1_mobile":316.58,"s1_other":0.0,"s2":50856.75},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":47676.17,"renewable":0.0,"electricity":331090.03,"fossil_types":{"NG":43552.71,"Diesel":2717.43,"Petro":0.74,"LPG":1405.29},"renewable_types":{}},"ghg":{"s1_stationary":2285.59,"s1_fugitive":0.0,"s1_mobile":301.11,"s1_other":0.0,"s2":37626.79},"renewable":{"solar_ppa":21828.73,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":48801.27,"renewable":0.0,"electricity":353017.94,"fossil_types":{"NG":43552.71,"Diesel":4118.94,"Petro":0.74,"LPG":1128.89},"renewable_types":{}},"ghg":{"s1_stationary":2458.43,"s1_fugitive":11.6,"s1_mobile":333.98,"s1_other":0.0,"s2":40289.48},"renewable":{"solar_ppa":21493.12,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":43554.34,"renewable":0.0,"electricity":360401.95,"fossil_types":{"NG":40550.02,"Diesel":2749.18,"Petro":1.37,"LPG":253.78},"renewable_types":{}},"ghg":{"s1_stationary":2288.19,"s1_fugitive":21.16,"s1_mobile":191.58,"s1_other":0.0,"s2":39152.55},"renewable":{"solar_ppa":22799.12,"biomass":0.0,"biogas":0.0,"rec":0.0}}},"ASCEND THA":{"2020":{"energy":{"fossil":4588.39,"renewable":0.0,"electricity":254504.54,"fossil_types":{"Diesel":867.39,"Petro":3721.0},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":283.11,"s1_other":0.0,"s2":30964.72},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":2906.48,"renewable":0.0,"electricity":279712.72,"fossil_types":{"Diesel":571.37,"Petro":2335.11},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":189.22,"s1_other":0.0,"s2":37061.93},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":2900.57,"renewable":0.0,"electricity":275804.6,"fossil_types":{"Diesel":600.86,"Petro":2299.71},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":185.32,"s1_other":0.0,"s2":34552.19},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":1257.51,"renewable":0.0,"electricity":284844.47,"fossil_types":{"Diesel":1210.93,"LPG":46.59},"renewable_types":{}},"ghg":{"s1_stationary":75.64,"s1_fugitive":1467.75,"s1_mobile":16.32,"s1_other":0.0,"s2":34656.08},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":1933.55,"renewable":0.0,"electricity":291847.58,"fossil_types":{"Diesel":1093.94,"Petro":839.61},"renewable_types":{}},"ghg":{"s1_stationary":63.49,"s1_fugitive":1412.26,"s1_mobile":65.62,"s1_other":0.0,"s2":35467.59},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":3077.85,"renewable":0.0,"electricity":392450.03,"fossil_types":{"Diesel":2176.42,"Petro":839.32,"LPG":62.11},"renewable_types":{}},"ghg":{"s1_stationary":142.02,"s1_fugitive":1240.61,"s1_mobile":67.77,"s1_other":0.0,"s2":45013.83},"renewable":{"solar_ppa":4306.82,"biomass":0.0,"biogas":0.0,"rec":4306.82}}},"CP LAND":{"2020":{"energy":{"fossil":13319.41,"renewable":3822.51,"electricity":107568.1,"fossil_types":{"Diesel":2170.94,"FuelOil":8429.4,"Petro":435.18,"LPG":2283.9},"renewable_types":{"Solar":3822.51}},"ghg":{"s1_stationary":804.72,"s1_fugitive":0.0,"s1_mobile":185.53,"s1_other":0.0,"s2":13087.45},"renewable":{"solar_ppa":3822.51,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":9256.15,"renewable":4305.04,"electricity":100062.98,"fossil_types":{"Diesel":2339.79,"FuelOil":4763.3,"Petro":331.07,"LPG":1821.99},"renewable_types":{"Solar":4305.04}},"ghg":{"s1_stationary":468.25,"s1_fugitive":0.0,"s1_mobile":208.43,"s1_other":0.0,"s2":13258.34},"renewable":{"solar_ppa":4305.04,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":11381.54,"renewable":7106.26,"electricity":111459.48,"fossil_types":{"Diesel":2705.86,"FuelOil":4244.83,"Petro":383.92,"LPG":4046.93},"renewable_types":{"Solar":7106.26}},"ghg":{"s1_stationary":621.11,"s1_fugitive":14.68,"s1_mobile":191.8,"s1_other":0.0,"s2":13963.4},"renewable":{"solar_ppa":7106.26,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":17194.25,"renewable":8403.63,"electricity":122001.53,"fossil_types":{"Diesel":2143.68,"FuelOil":7671.02,"Petro":989.12,"LPG":6390.43},"renewable_types":{"Solar":8403.63}},"ghg":{"s1_stationary":1035.42,"s1_fugitive":65.35,"s1_mobile":188.11,"s1_other":0.0,"s2":14843.52},"renewable":{"solar_ppa":8403.63,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":19121.4,"renewable":10272.41,"electricity":123452.11,"fossil_types":{"Diesel":2501.18,"FuelOil":5773.63,"Petro":414.18,"LPG":10432.41},"renewable_types":{"Solar":10272.41}},"ghg":{"s1_stationary":1128.37,"s1_fugitive":895.39,"s1_mobile":192.47,"s1_other":0.0,"s2":15002.86},"renewable":{"solar_ppa":10272.41,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":6318.09,"renewable":9313.43,"electricity":117514.33,"fossil_types":{"Diesel":2484.6,"Petro":232.62,"LPG":3600.87},"renewable_types":{"Solar":9313.43}},"ghg":{"s1_stationary":253.32,"s1_fugitive":1304.03,"s1_mobile":174.04,"s1_other":0.0,"s2":13628.4},"renewable":{"solar_ppa":9313.43,"biomass":0.0,"biogas":0.0,"rec":0.0}}},"AERA1":{"2020":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":131.8,"renewable":0.0,"electricity":135621.48,"fossil_types":{"Diesel":131.8},"renewable_types":{}},"ghg":{"s1_stationary":9.8,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":15110.81},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":11423.02,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":1645.27,"renewable":0.0,"electricity":257444.37,"fossil_types":{"Diesel":1645.27},"renewable_types":{}},"ghg":{"s1_stationary":26.67,"s1_fugitive":0.0,"s1_mobile":94.46,"s1_other":0.0,"s2":29088.72},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}}},"ALL NOW":{"2020":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":146.44,"renewable":0.0,"electricity":2238.23,"fossil_types":{"Petro":146.44},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":10.41,"s1_other":0.0,"s2":272.32},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":44.2,"renewable":0.0,"electricity":2682.53,"fossil_types":{"Petro":44.2},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":2.84,"s1_other":0.0,"s2":326.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":115.04,"renewable":0.0,"electricity":5624.02,"fossil_types":{"Diesel":114.37,"Petro":0.67},"renewable_types":{}},"ghg":{"s1_stationary":4.04,"s1_fugitive":0.01,"s1_mobile":4.02,"s1_other":0.0,"s2":652.23},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}}},"ASCEND GROUP":{"2020":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":2517.83,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":308.14},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":1886.4,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":284.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":1625.97,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":230.44},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":1162.43,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":216.36},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":0,"renewable":0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}}},"ALTERVIM":{"2020":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":6295.31,"renewable":0.0,"electricity":111.3,"fossil_types":{"Diesel":5542.85,"Petro":752.47},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":441.77,"s1_other":0.0,"s2":13.54},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":9150.6,"renewable":0.0,"electricity":66.44,"fossil_types":{"Diesel":8398.13,"Petro":752.47},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":641.82,"s1_other":0.0,"s2":8.07},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":605.17,"renewable":0.0,"electricity":84.66,"fossil_types":{"Diesel":259.91,"Petro":345.25},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":41.39,"s1_other":0.0,"s2":9.82},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}}},"CHIA TAI":{"2020":{"energy":{"fossil":34769.71,"renewable":0.0,"electricity":23234.07,"fossil_types":{"Diesel":32834.45,"Petro":1849.29,"LPG":85.97},"renewable_types":{}},"ghg":{"s1_stationary":31.4,"s1_fugitive":0.0,"s1_mobile":2564.15,"s1_other":0.0,"s2":2826.81},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":33447.02,"renewable":0.0,"electricity":22609.74,"fossil_types":{"Diesel":32103.98,"Petro":1279.43,"LPG":63.61},"renewable_types":{}},"ghg":{"s1_stationary":1076.53,"s1_fugitive":0.0,"s1_mobile":1324.04,"s1_other":0.0,"s2":2995.79},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":31246.32,"renewable":175.94,"electricity":21442.77,"fossil_types":{"Diesel":29664.38,"Petro":1476.74,"LPG":105.2},"renewable_types":{"Biomass":5.3,"Solar":170.64}},"ghg":{"s1_stationary":41.7,"s1_fugitive":28.09,"s1_mobile":2188.34,"s1_other":0.0,"s2":2686.3},"renewable":{"solar_ppa":170.64,"biomass":5.3,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":31511.84,"renewable":176.57,"electricity":29626.01,"fossil_types":{"Diesel":30112.52,"Petro":1260.7,"LPG":138.62},"renewable_types":{"Biomass":4.03,"Solar":172.54}},"ghg":{"s1_stationary":19.64,"s1_fugitive":2.05,"s1_mobile":2234.85,"s1_other":0.0,"s2":3600.38},"renewable":{"solar_ppa":172.54,"biomass":4.03,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":35531.37,"renewable":532.81,"electricity":28450.15,"fossil_types":{"Diesel":33800.97,"FuelOil":411.09,"Petro":691.08,"LPG":628.23},"renewable_types":{"Biomass":268.67,"Solar":264.14}},"ghg":{"s1_stationary":189.66,"s1_fugitive":426.45,"s1_mobile":2370.61,"s1_other":0.0,"s2":3457.48},"renewable":{"solar_ppa":264.14,"biomass":268.67,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":20104.18,"renewable":208.12,"electricity":24186.55,"fossil_types":{"Diesel":18555.72,"FuelOil":546.83,"Petro":680.61,"LPG":321.02},"renewable_types":{"Solar":208.12}},"ghg":{"s1_stationary":126.1,"s1_fugitive":97.06,"s1_mobile":1285.57,"s1_other":11.61,"s2":2804.97},"renewable":{"solar_ppa":208.12,"biomass":0.0,"biogas":0.0,"rec":0.0}}},"FIT":{"2020":{"energy":{"fossil":19626.44,"renewable":9233.1,"electricity":2627.69,"fossil_types":{"Diesel":16249.83,"Petro":3367.74,"LPG":8.87},"renewable_types":{"Biomass":9233.1}},"ghg":{"s1_stationary":169.03,"s1_fugitive":0.0,"s1_mobile":1254.34,"s1_other":0.0,"s2":338.21},"renewable":{"solar_ppa":0.0,"biomass":9233.1,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":19626.44,"renewable":9233.1,"electricity":2627.69,"fossil_types":{"Diesel":16249.83,"Petro":3367.74,"LPG":8.87},"renewable_types":{"Biomass":9233.1}},"ghg":{"s1_stationary":169.03,"s1_fugitive":0.0,"s1_mobile":1254.34,"s1_other":0.0,"s2":348.42},"renewable":{"solar_ppa":0.0,"biomass":9233.1,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":0.0,"renewable":0.0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":0,"renewable":0,"electricity":0.0,"fossil_types":{},"renewable_types":{}},"ghg":{"s1_stationary":0.0,"s1_fugitive":0.0,"s1_mobile":0.0,"s1_other":0.0,"s2":0.0},"renewable":{"solar_ppa":0.0,"biomass":0.0,"biogas":0.0,"rec":0.0}}},"OTHER BU (CPG)":{"2020":{"energy":{"fossil":51429.29,"renewable":1568.94,"electricity":67347.78,"fossil_types":{"NG":10925.47,"Diesel":34501.14,"Petro":5850.91,"LPG":151.77},"renewable_types":{"Solar":1568.94}},"ghg":{"s1_stationary":616.27,"s1_fugitive":0.0,"s1_mobile":2990.63,"s1_other":0.0,"s2":8752.24},"renewable":{"solar_ppa":1568.94,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2021":{"energy":{"fossil":50772.73,"renewable":584.14,"electricity":42264.86,"fossil_types":{"Diesel":43611.45,"Petro":7064.56,"LPG":96.72},"renewable_types":{"Solar":584.14}},"ghg":{"s1_stationary":267.52,"s1_fugitive":0.0,"s1_mobile":3335.46,"s1_other":0.0,"s2":5600.09},"renewable":{"solar_ppa":584.14,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2022":{"energy":{"fossil":296904.29,"renewable":1496.4,"electricity":37309.17,"fossil_types":{"Diesel":276709.99,"Petro":20117.4,"LPG":76.9},"renewable_types":{"Solar":1496.4}},"ghg":{"s1_stationary":677.54,"s1_fugitive":0.0,"s1_mobile":20453.22,"s1_other":0.0,"s2":4674.01},"renewable":{"solar_ppa":1496.4,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2023":{"energy":{"fossil":22130.35,"renewable":1742.34,"electricity":44192.66,"fossil_types":{"Diesel":19481.63,"Petro":2248.24,"LPG":400.48},"renewable_types":{"Solar":1742.34}},"ghg":{"s1_stationary":55.49,"s1_fugitive":17.02,"s1_mobile":1497.51,"s1_other":0.0,"s2":4860.36},"renewable":{"solar_ppa":5986.82,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2024":{"energy":{"fossil":126893.74,"renewable":3761.15,"electricity":47129.82,"fossil_types":{"Diesel":117796.21,"Petro":8900.25,"LPG":197.28},"renewable_types":{"Solar":3761.15}},"ghg":{"s1_stationary":11.38,"s1_fugitive":228.36,"s1_mobile":9220.14,"s1_other":0.0,"s2":5214.51},"renewable":{"solar_ppa":7982.97,"biomass":0.0,"biogas":0.0,"rec":0.0}},"2025":{"energy":{"fossil":124584.47,"renewable":4493.83,"electricity":55040.71,"fossil_types":{"NG":15.83,"Diesel":113620.37,"Petro":10562.53,"LPG":385.74},"renewable_types":{"Solar":4493.83}},"ghg":{"s1_stationary":7884.37,"s1_fugitive":159.69,"s1_mobile":1201.67,"s1_other":0.0,"s2":3163.39},"renewable":{"solar_ppa":9509.13,"biomass":0.0,"biogas":0.0,"rec":17254.8}}}}},"target":{"years":[2021,2022,2023,2024,2025,2026,2027,2028,2029,2030],"target":[6.45,6.15,5.85,5.55,5.25,4.95,4.64,4.34,4.04,3.741],"baseline":6.45,"goal2030":3.741}};
+
+const METRICS = {
+  energy:     { label: 'Energy Consumption',  unit: 'GJ',     color: 'var(--s1-blue)',   goodDir: null },
+  ghg:        { label: 'GHG Emissions',       unit: 'tCO2e',  color: 'var(--s8-red)',    goodDir: 'down' },
+  cost:       { label: 'Energy Cost',         unit: 'บาท',    color: 'var(--s4-yellow)', goodDir: null },
+  renewable:  { label: 'Renewable %',         unit: '%',      color: 'var(--s3-aqua)',   goodDir: 'up' },
+};
+
+function fmtShort(v, unit){
+  const abs = Math.abs(v);
+  let s;
+  if(unit === '%'){ return v.toFixed(1) + '%'; }
+  if(abs >= 1e9) s = (v/1e9).toFixed(1) + 'B';
+  else if(abs >= 1e6) s = (v/1e6).toFixed(1) + 'M';
+  else if(abs >= 1e3) s = (v/1e3).toFixed(1) + 'K';
+  else s = v.toFixed(0);
+  return s + ' ' + unit;
+}
+
+function niceStep(rough){
+  const exp = Math.floor(Math.log10(rough));
+  const f = rough / Math.pow(10,exp);
+  let nf;
+  if(f < 1.5) nf = 1;
+  else if(f < 3) nf = 2;
+  else if(f < 7) nf = 5;
+  else nf = 10;
+  return nf * Math.pow(10,exp);
+}
+function niceTicks(min, max, count){
+  const step = niceStep((max-min)/(count-1) || (max||1));
+  const niceMin = Math.floor(min/step)*step;
+  const niceMax = Math.ceil(max/step)*step;
+  const ticks=[];
+  for(let v=niceMin; v<=niceMax+1e-9; v+=step) ticks.push(v);
+  return ticks;
+}
+
+// Fritsch-Carlson monotone cubic interpolation -> smooth SVG path that never overshoots data
+function monotonePathD(xy){
+  const n = xy.length;
+  if(n < 2) return '';
+  if(n === 2) return 'M'+xy[0][0].toFixed(2)+','+xy[0][1].toFixed(2)+' L'+xy[1][0].toFixed(2)+','+xy[1][1].toFixed(2);
+  const xs = xy.map(p=>p[0]), ys = xy.map(p=>p[1]);
+  const d = []; // secant slopes
+  for(let i=0;i<n-1;i++){ d.push((ys[i+1]-ys[i])/(xs[i+1]-xs[i])); }
+  const m = new Array(n);
+  m[0] = d[0]; m[n-1] = d[n-2];
+  for(let i=1;i<n-1;i++){
+    if(d[i-1]===0 || d[i]===0 || (d[i-1]<0)!==(d[i]<0)) m[i]=0;
+    else m[i] = (d[i-1]+d[i])/2;
+  }
+  for(let i=0;i<n-1;i++){
+    if(d[i]===0){ m[i]=0; m[i+1]=0; continue; }
+    const a = m[i]/d[i], b = m[i+1]/d[i];
+    const s = a*a+b*b;
+    if(s>9){ const t = 3/Math.sqrt(s); m[i]=t*a*d[i]; m[i+1]=t*b*d[i]; }
+  }
+  let path = 'M'+xs[0].toFixed(2)+','+ys[0].toFixed(2)+' ';
+  for(let i=0;i<n-1;i++){
+    const dx = xs[i+1]-xs[i];
+    const c1x = xs[i]+dx/3, c1y = ys[i]+m[i]*dx/3;
+    const c2x = xs[i+1]-dx/3, c2y = ys[i+1]-m[i+1]*dx/3;
+    path += 'C'+c1x.toFixed(2)+','+c1y.toFixed(2)+' '+c2x.toFixed(2)+','+c2y.toFixed(2)+' '+xs[i+1].toFixed(2)+','+ys[i+1].toFixed(2)+' ';
+  }
+  return path.trim();
+}
+
+function fmtFull(v, unit){
+  if(unit === '%') return v.toFixed(2) + '%';
+  return Math.round(v).toLocaleString('en-US') + ' ' + unit;
+}
+
+function renewSeries(obj){
+  return obj.energy.map((e,i)=> e ? (obj.renewable[i]/e*100) : 0);
+}
+
+function seriesFor(obj, key){
+  if(key === 'renewable') return renewSeries(obj);
+  return obj[key];
+}
+
+function last(arr){ return arr[arr.length-1]; }
+function prev(arr){ return arr[arr.length-2]; }
+
+// ---------- KPI row ----------
+function buildKPI(){
+  const row = document.getElementById('kpiRow');
+  row.innerHTML = '';
+  Object.keys(METRICS).forEach(key=>{
+    const m = METRICS[key];
+    const series = seriesFor(DATA.group, key);
+    const cur = last(series), prv = prev(series);
+    const pct = prv ? ((cur-prv)/Math.abs(prv)*100) : 0;
+    let deltaClass = 'neutral';
+    if(m.goodDir === 'down') deltaClass = pct < 0 ? 'good' : (pct > 0 ? 'bad' : 'neutral');
+    if(m.goodDir === 'up') deltaClass = pct > 0 ? 'good' : (pct < 0 ? 'bad' : 'neutral');
+    const arrow = pct > 0 ? '&#9650;' : (pct < 0 ? '&#9660;' : '&#8226;');
+
+    const tile = document.createElement('div');
+    tile.className = 'stat-tile';
+    tile.innerHTML =
+      '<div class="label">' + m.label + ' (2025)</div>' +
+      '<div class="value">' + fmtShort(cur, m.unit) + '</div>' +
+      '<div class="delta ' + deltaClass + '">' + arrow + ' ' + Math.abs(pct).toFixed(1) + '% YoY</div>' +
+      '<svg class="spark" viewBox="0 0 100 28" preserveAspectRatio="none"></svg>';
+    row.appendChild(tile);
+
+    const svg = tile.querySelector('svg.spark');
+    drawSparkline(svg, series, m.color);
+  });
+}
+
+function drawSparkline(svg, values, colorVar){
+  const w=100,h=28,pad=3;
+  const min = Math.min(...values), max = Math.max(...values);
+  const range = (max-min) || 1;
+  const stepX = (w-2*pad)/(values.length-1);
+  let d = '';
+  values.forEach((v,i)=>{
+    const x = pad + i*stepX;
+    const y = h-pad - ((v-min)/range)*(h-2*pad);
+    d += (i===0?'M':'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+  });
+  const ns = 'http://www.w3.org/2000/svg';
+  const path = document.createElementNS(ns,'path');
+  path.setAttribute('d', d.trim());
+  path.setAttribute('fill','none');
+  path.setAttribute('stroke', resolveColor(colorVar.slice(4,-1)));
+  path.setAttribute('stroke-width','2');
+  path.setAttribute('stroke-linecap','round');
+  path.setAttribute('stroke-linejoin','round');
+  svg.appendChild(path);
+  // last dot
+  const lastX = pad + (values.length-1)*stepX;
+  const lastY = h-pad - ((values[values.length-1]-min)/range)*(h-2*pad);
+  const dot = document.createElementNS(ns,'circle');
+  dot.setAttribute('cx', lastX); dot.setAttribute('cy', lastY); dot.setAttribute('r', 2.6);
+  dot.setAttribute('fill', path.getAttribute('stroke'));
+  svg.appendChild(dot);
+}
+
+// ---------- Main detail line chart ----------
+let currentMetric = 'ghg';
+
+function resolveColor(varName){
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+}
+
+function buildMetricSeg(){
+  const seg = document.getElementById('metricSeg');
+  seg.innerHTML = '';
+  Object.keys(METRICS).forEach(key=>{
+    const btn = document.createElement('button');
+    btn.className = 'seg-btn';
+    btn.type = 'button';
+    btn.textContent = METRICS[key].label;
+    btn.setAttribute('aria-pressed', key === currentMetric ? 'true' : 'false');
+    btn.addEventListener('click', ()=>{
+      currentMetric = key;
+      Array.from(seg.children).forEach(c=>c.setAttribute('aria-pressed','false'));
+      btn.setAttribute('aria-pressed','true');
+      drawMainChart();
+    });
+    seg.appendChild(btn);
+  });
+}
+
+function drawMainChart(){
+  const svg = document.getElementById('mainChart');
+  svg.innerHTML = '';
+  const ns = 'http://www.w3.org/2000/svg';
+  const W=340,H=200, padL=8, padR=8, padT=20, padB=24;
+  const m = METRICS[currentMetric];
+  const colorHex = resolveColor(m.color.slice(4,-1));
+  const values = seriesFor(DATA.group, currentMetric);
+  const years = DATA.years;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+  const stepX = plotW/(values.length-1);
+
+  const dataMin = Math.min(...values), dataMax = Math.max(...values);
+  const ticks = niceTicks(dataMin, dataMax, 4);
+  const axisMin = ticks[0], axisMax = ticks[ticks.length-1];
+  const range = (axisMax-axisMin) || 1;
+  const yOf = v => padT + plotH - ((v-axisMin)/range)*plotH;
+
+  const xy = values.map((v,i)=> [padL + i*stepX, yOf(v)]);
+
+  // gridlines at nice round values
+  ticks.forEach(tv=>{
+    const y = yOf(tv);
+    const line = document.createElementNS(ns,'line');
+    line.setAttribute('x1',padL); line.setAttribute('x2', W-padR);
+    line.setAttribute('y1',y); line.setAttribute('y2',y);
+    line.setAttribute('class','grid-line');
+    svg.appendChild(line);
+    const t = document.createElementNS(ns,'text');
+    t.setAttribute('x', padL); t.setAttribute('y', y-3);
+    t.setAttribute('class','axis-label');
+    t.textContent = fmtShort(tv, m.unit);
+    svg.appendChild(t);
+  });
+
+  // soft gradient fill under the curve
+  const gradId = 'mcGrad-' + currentMetric;
+  let defs = svg.querySelector('defs');
+  if(!defs){ defs = document.createElementNS(ns,'defs'); svg.appendChild(defs); }
+  defs.innerHTML = '';
+  const grad = document.createElementNS(ns,'linearGradient');
+  grad.setAttribute('id', gradId); grad.setAttribute('x1','0'); grad.setAttribute('y1','0'); grad.setAttribute('x2','0'); grad.setAttribute('y2','1');
+  const stop1 = document.createElementNS(ns,'stop'); stop1.setAttribute('offset','0%'); stop1.setAttribute('stop-color',colorHex); stop1.setAttribute('stop-opacity','0.22');
+  const stop2 = document.createElementNS(ns,'stop'); stop2.setAttribute('offset','100%'); stop2.setAttribute('stop-color',colorHex); stop2.setAttribute('stop-opacity','0');
+  grad.appendChild(stop1); grad.appendChild(stop2);
+  defs.appendChild(grad);
+
+  const lineD = monotonePathD(xy);
+  const areaD = lineD + ' L' + xy[xy.length-1][0].toFixed(2) + ',' + (padT+plotH).toFixed(2) +
+                ' L' + xy[0][0].toFixed(2) + ',' + (padT+plotH).toFixed(2) + ' Z';
+  const areaPath = document.createElementNS(ns,'path');
+  areaPath.setAttribute('d', areaD);
+  areaPath.setAttribute('fill', 'url(#'+gradId+')');
+  svg.appendChild(areaPath);
+
+  // baseline (bottom of plot area)
+  const base = document.createElementNS(ns,'line');
+  base.setAttribute('x1',padL); base.setAttribute('x2',W-padR);
+  base.setAttribute('y1', padT+plotH); base.setAttribute('y2', padT+plotH);
+  base.setAttribute('class','baseline');
+  svg.appendChild(base);
+
+  // hover guideline (vertical, follows pointer)
+  const hoverLine = document.createElementNS(ns,'line');
+  hoverLine.setAttribute('class','hover-x');
+  hoverLine.setAttribute('y1', padT); hoverLine.setAttribute('y2', padT+plotH);
+  svg.appendChild(hoverLine);
+
+  // smooth monotone curve
+  const path = document.createElementNS(ns,'path');
+  path.setAttribute('d', lineD);
+  path.setAttribute('class','line-path');
+  path.setAttribute('stroke', colorHex);
+  path.setAttribute('stroke-width', '2.75');
+  svg.appendChild(path);
+
+  const tooltip = document.getElementById('chartTooltip');
+
+  // year labels + dots + hover targets
+  xy.forEach((p,i)=>{
+    const t = document.createElementNS(ns,'text');
+    t.setAttribute('x', p[0]); t.setAttribute('y', H-6);
+    t.setAttribute('class','axis-label');
+    t.setAttribute('text-anchor', i===0 ? 'start' : (i===xy.length-1 ? 'end' : 'middle'));
+    t.textContent = years[i];
+    svg.appendChild(t);
+
+    const isLast = i===xy.length-1;
+    const dot = document.createElementNS(ns,'circle');
+    dot.setAttribute('cx', p[0]); dot.setAttribute('cy', p[1]); dot.setAttribute('r', isLast?5:3.2);
+    dot.setAttribute('fill', colorHex);
+    dot.setAttribute('stroke', resolveColor('--surface-1'));
+    dot.setAttribute('stroke-width', isLast?2:1.5);
+    svg.appendChild(dot);
+
+    const hit = document.createElementNS(ns,'rect');
+    hit.setAttribute('x', padL + i*stepX - stepX/2);
+    hit.setAttribute('y', 0);
+    hit.setAttribute('width', stepX);
+    hit.setAttribute('height', H);
+    hit.setAttribute('fill', 'transparent');
+    hit.style.cursor = 'pointer';
+    const showTip = ()=>{
+      tooltip.style.left = p[0]/W*100 + '%';
+      tooltip.style.top = p[1]/H*100 + '%';
+      tooltip.textContent = years[i] + ': ' + fmtFull(values[i], m.unit);
+      tooltip.style.opacity = '1';
+      hoverLine.setAttribute('x1', p[0]); hoverLine.setAttribute('x2', p[0]);
+      hoverLine.style.opacity = '1';
+    };
+    hit.addEventListener('mouseenter', showTip);
+    hit.addEventListener('touchstart', showTip, {passive:true});
+    hit.addEventListener('mouseleave', ()=>{ tooltip.style.opacity='0'; hoverLine.style.opacity='0'; });
+    svg.appendChild(hit);
+  });
+
+  // direct label on last point, with halo so it never collides with the dot/line
+  const lp = xy[xy.length-1];
+  const labelText = fmtShort(values[values.length-1], m.unit);
+  const labelY = lp[1] - 15;
+  const haloW = labelText.length*6.1 + 8;
+  const halo = document.createElementNS(ns,'rect');
+  halo.setAttribute('x', lp[0]-haloW); halo.setAttribute('y', labelY-11);
+  halo.setAttribute('width', haloW); halo.setAttribute('height', 15);
+  halo.setAttribute('rx', 4);
+  halo.setAttribute('fill', resolveColor('--surface-1'));
+  svg.appendChild(halo);
+  const lastLabel = document.createElementNS(ns,'text');
+  lastLabel.setAttribute('x', lp[0]-4);
+  lastLabel.setAttribute('y', labelY);
+  lastLabel.setAttribute('text-anchor','end');
+  lastLabel.setAttribute('font-size','10.5');
+  lastLabel.setAttribute('font-weight','700');
+  lastLabel.setAttribute('fill', resolveColor('--text-primary'));
+  lastLabel.textContent = labelText;
+  svg.appendChild(lastLabel);
+}
+
+// ---------- Donut + source detail breakdown ----------
+function drawDonut(svg, segments){
+  const ns = 'http://www.w3.org/2000/svg';
+  svg.innerHTML = '';
+  svg.setAttribute('viewBox','0 0 120 120');
+  const cx=60, cy=60, r=48, strokeW=20;
+  const total = segments.reduce((s,x)=>s+x.value,0) || 1;
+  const visible = segments.filter(s=>s.value>0);
+  let angle = -90;
+  visible.forEach(seg=>{
+    const frac = seg.value/total;
+    const sweep = frac*360;
+    if(frac >= 0.9995){
+      const circle = document.createElementNS(ns,'circle');
+      circle.setAttribute('cx',cx); circle.setAttribute('cy',cy); circle.setAttribute('r', r);
+      circle.setAttribute('fill','none'); circle.setAttribute('stroke', seg.color); circle.setAttribute('stroke-width', strokeW);
+      svg.appendChild(circle);
+      return;
+    }
+    const largeArc = sweep>180?1:0;
+    const startRad = angle*Math.PI/180, endRad = (angle+sweep)*Math.PI/180;
+    const x1 = cx + r*Math.cos(startRad), y1 = cy + r*Math.sin(startRad);
+    const x2 = cx + r*Math.cos(endRad), y2 = cy + r*Math.sin(endRad);
+    const path = document.createElementNS(ns,'path');
+    path.setAttribute('d', `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${largeArc} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke', seg.color);
+    path.setAttribute('stroke-width', strokeW);
+    svg.appendChild(path);
+    angle += sweep;
+  });
+}
+
+function donutBlock(segs, unit, trendEl){
+  const total = segs.reduce((s,x)=>s+x.value,0) || 1;
+  const wrap = document.createElement('div');
+  wrap.className = 'donut-wrap';
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('class','donut');
+  wrap.appendChild(svg);
+  drawDonut(svg, segs);
+  const legend = document.createElement('div');
+  legend.className = 'donut-legend';
+  segs.forEach(s=>{
+    const pct = (s.value/total*100);
+    const item = document.createElement('div');
+    item.className = 'item';
+    item.innerHTML = '<span class="dot" style="background:'+s.color+'"></span><div class="text"><span class="name">'+s.label+'</span><span class="val">'+fmtShort(s.value, unit)+' &middot; '+pct.toFixed(1)+'%</span></div>';
+    legend.appendChild(item);
+  });
+  wrap.appendChild(legend);
+  if(trendEl){
+    trendEl.style.flex = '1 1 220px';
+    trendEl.style.minWidth = '200px';
+    wrap.appendChild(trendEl);
+  }
+  return wrap;
+}
+
+// Compact multi-year stacked bar, fills the empty space beside the donut on wide screens
+// (falls to a new row below on narrow/mobile widths since the parent .donut-wrap wraps).
+function buildTrendStackChart(years, series, colorMap){
+  const ns = 'http://www.w3.org/2000/svg';
+  const container = document.createElement('div');
+  const title = document.createElement('div');
+  title.className = 'subbreak-title';
+  title.textContent = 'แนวโน้ม ' + years[0] + '-' + years[years.length-1];
+  container.appendChild(title);
+
+  const svg = document.createElementNS(ns,'svg');
+  svg.setAttribute('viewBox','0 0 220 140');
+  svg.style.width = '100%'; svg.style.height = '130px'; svg.style.display = 'block'; svg.style.overflow = 'visible';
+  container.appendChild(svg);
+
+  const keys = Object.keys(series);
+  const totals = years.map((y,i)=> keys.reduce((s,k)=> s+(series[k][i]||0), 0));
+  const maxVal = (Math.max(...totals) || 1) * 1.22;
+  const padL=2, padR=2, padT=14, padB=16;
+  const plotW = 220-padL-padR, plotH = 140-padT-padB;
+  const n = years.length;
+  const gap = 5;
+  const barW = (plotW - gap*(n-1))/n;
+  const textPrimary = resolveColor('--text-primary');
+
+  years.forEach((y,i)=>{
+    const x = padL + i*(barW+gap);
+    let cum = 0;
+    keys.forEach(k=>{
+      const v = series[k][i]||0;
+      const h = (v/maxVal)*plotH;
+      const barY = padT+plotH-cum-h;
+      if(h > 0.3){
+        const rect = document.createElementNS(ns,'rect');
+        rect.setAttribute('x',x.toFixed(1)); rect.setAttribute('y',barY.toFixed(1));
+        rect.setAttribute('width', barW.toFixed(1)); rect.setAttribute('height', h.toFixed(1));
+        rect.setAttribute('fill', colorMap[k]);
+        svg.appendChild(rect);
+      }
+      cum += h;
+    });
+
+    const totalLabel = document.createElementNS(ns,'text');
+    totalLabel.setAttribute('x', x+barW/2); totalLabel.setAttribute('y', padT+plotH-cum-4);
+    totalLabel.setAttribute('text-anchor','middle'); totalLabel.setAttribute('font-size','7.5'); totalLabel.setAttribute('font-weight','700');
+    totalLabel.setAttribute('fill', textPrimary);
+    totalLabel.textContent = fmtShort(totals[i], '').trim();
+    svg.appendChild(totalLabel);
+
+    const yl = document.createElementNS(ns,'text');
+    yl.setAttribute('x', x+barW/2); yl.setAttribute('y', 140-4);
+    yl.setAttribute('text-anchor','middle'); yl.setAttribute('font-size','7.5');
+    yl.setAttribute('fill', resolveColor('--text-muted'));
+    yl.textContent = "'" + String(y).slice(2);
+    svg.appendChild(yl);
+  });
+
+  return container;
+}
+
+function subBarList(title, obj, color, unit){
+  const wrap = document.createElement('div');
+  const h = document.createElement('div');
+  h.className = 'subbreak-title';
+  h.textContent = title;
+  wrap.appendChild(h);
+  const list = document.createElement('div');
+  list.className = 'bar-list';
+  const entries = Object.entries(obj).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);
+  const maxV = Math.max(...entries.map(e=>e[1]), 1);
+  entries.forEach(([name,v])=>{
+    const pct = Math.max(v/maxV*100, 1.5);
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    row.innerHTML = '<div class="bar-top"><span class="bar-name">'+name+'</span><span class="bar-value">'+fmtShort(v, unit)+'</span></div><div class="bar-track"><div class="bar-fill" style="width:'+pct.toFixed(1)+'%;background:'+color+'"></div></div>';
+    list.appendChild(row);
+  });
+  wrap.appendChild(list);
+  return wrap;
+}
+
+const FOSSIL_LABELS = { Coal:'Coal (ถ่านหิน)', NG:'Natural Gas', Diesel:'Diesel', LPG:'LPG', FuelOil:'Fuel Oil', Petro:'Petro' };
+const RENEW_LABELS = { Biomass:'Biomass', Solar:'Solar (self-gen)', Biogas:'Biogas' };
+
+function renderDetailBreakdown(container, det, metric, multiYearDict){
+  container.innerHTML = '';
+  if(!det){ container.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">ไม่มีข้อมูลรายละเอียดสำหรับปี/รายการนี้</div>'; return; }
+  const wrap = document.createElement('div');
+  const years = DATA.years;
+
+  function seriesFromDetail(getVal){
+    return years.map(y => {
+      const d = multiYearDict && multiYearDict[String(y)];
+      return d ? (getVal(d) || 0) : 0;
+    });
+  }
+
+  if(metric === 'energy'){
+    const e = det.energy;
+    const segs = [
+      {label:'Fossil', value:e.fossil, color: resolveColor('--s2-orange')},
+      {label:'Renewable', value:e.renewable, color: resolveColor('--s3-aqua')},
+      {label:'ไฟฟ้าซื้อ', value:e.electricity, color: resolveColor('--s1-blue')},
+    ];
+    let trend = null;
+    if(multiYearDict){
+      const series = {
+        fossil: seriesFromDetail(d=>d.energy.fossil),
+        renewable: seriesFromDetail(d=>d.energy.renewable),
+        electricity: seriesFromDetail(d=>d.energy.electricity),
+      };
+      trend = buildTrendStackChart(years, series, {
+        fossil: resolveColor('--s2-orange'), renewable: resolveColor('--s3-aqua'), electricity: resolveColor('--s1-blue'),
+      });
+    }
+    wrap.appendChild(donutBlock(segs, 'GJ', trend));
+    const fossilNamed = {}; Object.entries(e.fossil_types||{}).forEach(([k,v])=>{ fossilNamed[FOSSIL_LABELS[k]||k]=v; });
+    const renewNamed = {}; Object.entries(e.renewable_types||{}).forEach(([k,v])=>{ renewNamed[RENEW_LABELS[k]||k]=v; });
+    if(Object.keys(fossilNamed).length) wrap.appendChild(subBarList('Fossil แยกชนิด', fossilNamed, resolveColor('--s2-orange'), 'GJ'));
+    if(Object.keys(renewNamed).length) wrap.appendChild(subBarList('Renewable แยกชนิด', renewNamed, resolveColor('--s3-aqua'), 'GJ'));
+  } else if(metric === 'ghg'){
+    const g = det.ghg;
+    const s1total = g.s1_stationary + g.s1_fugitive + g.s1_mobile + g.s1_other;
+    const segs = [
+      {label:'Scope 1 (ปล่อยตรง)', value: s1total, color: resolveColor('--s8-red')},
+      {label:'Scope 2 (ไฟฟ้าซื้อ)', value: g.s2, color: resolveColor('--s2-orange')},
+    ];
+    let trend = null;
+    if(multiYearDict){
+      const series = {
+        s1: seriesFromDetail(d=> d.ghg.s1_stationary+d.ghg.s1_fugitive+d.ghg.s1_mobile+d.ghg.s1_other),
+        s2: seriesFromDetail(d=> d.ghg.s2),
+      };
+      trend = buildTrendStackChart(years, series, { s1: resolveColor('--s8-red'), s2: resolveColor('--s2-orange') });
+    }
+    wrap.appendChild(donutBlock(segs, 'tCO2e', trend));
+    const s1types = {};
+    if(g.s1_stationary) s1types['Stationary (เผาไหม้อยู่กับที่)'] = g.s1_stationary;
+    if(g.s1_fugitive) s1types['Fugitive (รั่วซึม/สารทำความเย็น)'] = g.s1_fugitive;
+    if(g.s1_mobile) s1types['Mobile (ยานพาหนะ)'] = g.s1_mobile;
+    if(g.s1_other) s1types['อื่นๆ (ปุ๋ย ฯลฯ)'] = g.s1_other;
+    if(Object.keys(s1types).length) wrap.appendChild(subBarList('Scope 1 แยกประเภท', s1types, resolveColor('--s8-red'), 'tCO2e'));
+  } else if(metric === 'renewable'){
+    const r = det.renewable;
+    const segs = [
+      {label:'Solar + PPA', value:r.solar_ppa, color: resolveColor('--s4-yellow')},
+      {label:'Biomass', value:r.biomass, color: resolveColor('--s3-aqua')},
+      {label:'Biogas', value:r.biogas, color: resolveColor('--s1-blue')},
+      {label:'REC', value:r.rec, color: resolveColor('--s2-orange')},
+    ];
+    let trend = null;
+    if(multiYearDict){
+      const series = {
+        solar_ppa: seriesFromDetail(d=>d.renewable.solar_ppa),
+        biomass: seriesFromDetail(d=>d.renewable.biomass),
+        biogas: seriesFromDetail(d=>d.renewable.biogas),
+        rec: seriesFromDetail(d=>d.renewable.rec),
+      };
+      trend = buildTrendStackChart(years, series, {
+        solar_ppa: resolveColor('--s4-yellow'), biomass: resolveColor('--s3-aqua'), biogas: resolveColor('--s1-blue'), rec: resolveColor('--s2-orange'),
+      });
+    }
+    wrap.appendChild(donutBlock(segs, 'GJ', trend));
+    wrap.appendChild(Object.assign(document.createElement('div'), {
+      className:'detail-note',
+      textContent:'หมายเหตุ: นับรวม RECs และ PPA ตามนิยาม Renewable Energy แบบกว้าง (ตรงกับ Renewable % KPI)'
+    }));
+  } else {
+    wrap.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">ไม่มีรายละเอียดสำหรับ metric นี้</div>';
+  }
+  container.appendChild(wrap);
+}
+
+function initOverviewDetail(){
+  const yearSeg = document.getElementById('ovDetailYearSeg');
+  const metricSeg = document.getElementById('ovDetailMetricSeg');
+  const body = document.getElementById('ovDetailBody');
+  const detailMetrics = ['energy','ghg','renewable'];
+  let state = { year: DATA.years[DATA.years.length-1], metric: 'energy' };
+
+  DATA.years.forEach(y=>{
+    const btn = document.createElement('button');
+    btn.className='seg-btn'; btn.type='button'; btn.textContent=y;
+    btn.setAttribute('aria-pressed', y===state.year?'true':'false');
+    btn.addEventListener('click', ()=>{
+      state.year=y;
+      Array.from(yearSeg.children).forEach(c=>c.setAttribute('aria-pressed','false'));
+      btn.setAttribute('aria-pressed','true');
+      render();
+    });
+    yearSeg.appendChild(btn);
+  });
+  yearSeg.scrollLeft = yearSeg.scrollWidth;
+
+  detailMetrics.forEach(key=>{
+    const btn = document.createElement('button');
+    btn.className='seg-btn'; btn.type='button'; btn.textContent=METRICS[key].label;
+    btn.setAttribute('aria-pressed', key===state.metric?'true':'false');
+    btn.addEventListener('click', ()=>{
+      state.metric=key;
+      Array.from(metricSeg.children).forEach(c=>c.setAttribute('aria-pressed','false'));
+      btn.setAttribute('aria-pressed','true');
+      render();
+    });
+    metricSeg.appendChild(btn);
+  });
+
+  function render(){
+    const det = DATA.detail.group[String(state.year)];
+    renderDetailBreakdown(body, det, state.metric, DATA.detail.group);
+  }
+  render();
+  return render;
+}
+
+// ---------- GHG vs Science-based Target composite chart ----------
+function buildSBTChart(){
+  const badge = document.getElementById('sbtBadge');
+  badge.innerHTML = '&#127793;&nbsp; เป้าหมาย SBTi: ลดการปล่อย GHG (Scope 1+2) 42% ภายในปี 2573 เทียบปีฐาน 2564';
+
+  const startIdx = DATA.years.indexOf(2021);
+  const years = DATA.years.slice(startIdx);            // 2021-2025
+  const actualVals = DATA.group.ghg.slice(startIdx);   // raw tCO2e
+  const targetMap = {};
+  DATA.target.years.forEach((y,i)=>{ targetMap[y] = DATA.target.target[i]*1e6; });
+  const baseline = actualVals[0];
+
+  const s1Vals = years.map(y=>{
+    const d = DATA.detail.group[String(y)].ghg;
+    return d.s1_stationary + d.s1_fugitive + d.s1_mobile + d.s1_other;
+  });
+  const s2Vals = years.map((y,i)=> actualVals[i] - s1Vals[i]);
+
+  drawSBTChart(years, s1Vals, s2Vals, actualVals, targetMap, baseline);
+
+  const legend = document.getElementById('sbtLegend');
+  legend.innerHTML =
+    '<div class="item"><span class="dot" style="background:'+resolveColor('--s8-red')+'"></span><span class="name">Scope 1</span></div>' +
+    '<div class="item"><span class="dot" style="background:'+resolveColor('--s2-orange')+'"></span><span class="name">Scope 2</span></div>' +
+    '<div class="item"><span class="dot" style="background:'+resolveColor('--s4-yellow')+'"></span><span class="name">เป้าหมายรายปี</span></div>' +
+    '<div class="item"><span class="dot" style="background:'+resolveColor('--text-muted')+'"></span><span class="name">เป้าหมาย 2573</span></div>';
+}
+
+function drawSBTChart(years, s1Vals, s2Vals, actualVals, targetMap, baseline){
+  const svg = document.getElementById('sbtBarChart');
+  svg.innerHTML = '';
+  const ns = 'http://www.w3.org/2000/svg';
+  const W=340, H=220, padL=6, padR=6, padT=34, padB=22;
+  const plotH = H - padT - padB;
+  const n = years.length;
+  const barW = 34, gap = 9, goalGap = 24, goalW = 38;
+  const plotStart = padL;
+
+  const maxScale = baseline * 1.14;
+  const yOf = v => padT + plotH - (v/maxScale)*plotH;
+
+  const s1Color = resolveColor('--s8-red');
+  const s2Color = resolveColor('--s2-orange');
+  const targetColor = resolveColor('--s4-yellow');
+  const goalColor = resolveColor('--text-muted');
+  const textPrimary = resolveColor('--text-primary');
+  const textSecondary = resolveColor('--text-secondary');
+  const tooltip = document.getElementById('sbtTooltip');
+
+  function attachHit(x, w, topY, text){
+    const hit = document.createElementNS(ns,'rect');
+    hit.setAttribute('x', x); hit.setAttribute('y', 0);
+    hit.setAttribute('width', w); hit.setAttribute('height', H);
+    hit.setAttribute('fill', 'transparent');
+    hit.style.cursor = 'pointer';
+    const showTip = ()=>{
+      tooltip.style.left = ((x+w/2)/W*100) + '%';
+      tooltip.style.top = (Math.max(topY-6,10)/H*100) + '%';
+      tooltip.innerHTML = text;
+      tooltip.style.opacity = '1';
+    };
+    hit.addEventListener('mouseenter', showTip);
+    hit.addEventListener('touchstart', showTip, {passive:true});
+    hit.addEventListener('mouseleave', ()=>{ tooltip.style.opacity='0'; });
+    svg.appendChild(hit);
+  }
+
+  const baselineLine = document.createElementNS(ns,'line');
+  baselineLine.setAttribute('x1', padL); baselineLine.setAttribute('x2', W-padR);
+  baselineLine.setAttribute('y1', padT+plotH); baselineLine.setAttribute('y2', padT+plotH);
+  baselineLine.setAttribute('class','baseline');
+  svg.appendChild(baselineLine);
+
+  const xPositions = [];
+  years.forEach((y,i)=>{ xPositions.push(plotStart + i*(barW+gap)); });
+  const lastActualX = xPositions[xPositions.length-1];
+  const goalX = lastActualX + barW + goalGap;
+
+  // actual stacked bars (Scope 1 bottom, Scope 2 top)
+  years.forEach((y,i)=>{
+    const x = xPositions[i];
+    const s1h = (s1Vals[i]/maxScale)*plotH;
+    const s2h = (s2Vals[i]/maxScale)*plotH;
+    const s1y = padT+plotH - s1h;
+    const s2y = s1y - s2h;
+
+    const r1 = document.createElementNS(ns,'rect');
+    r1.setAttribute('x',x.toFixed(1)); r1.setAttribute('y',s1y.toFixed(1));
+    r1.setAttribute('width', barW); r1.setAttribute('height', s1h.toFixed(1));
+    r1.setAttribute('fill', s1Color);
+    svg.appendChild(r1);
+
+    const r2 = document.createElementNS(ns,'rect');
+    r2.setAttribute('x',x.toFixed(1)); r2.setAttribute('y',s2y.toFixed(1));
+    r2.setAttribute('width', barW); r2.setAttribute('height', s2h.toFixed(1));
+    r2.setAttribute('rx', 4); r2.setAttribute('fill', s2Color);
+    svg.appendChild(r2);
+
+    if(s1h > 13){
+      const l1 = document.createElementNS(ns,'text');
+      l1.setAttribute('x', x+barW/2); l1.setAttribute('y', s1y + s1h/2 + 3.5);
+      l1.setAttribute('text-anchor','middle'); l1.setAttribute('font-size','8.5'); l1.setAttribute('font-weight','700');
+      l1.setAttribute('fill', '#fff');
+      l1.textContent = (s1Vals[i]/1e6).toFixed(2);
+      svg.appendChild(l1);
+    }
+    if(s2h > 13){
+      const l2 = document.createElementNS(ns,'text');
+      l2.setAttribute('x', x+barW/2); l2.setAttribute('y', s2y + s2h/2 + 3.5);
+      l2.setAttribute('text-anchor','middle'); l2.setAttribute('font-size','8.5'); l2.setAttribute('font-weight','700');
+      l2.setAttribute('fill', '#fff');
+      l2.textContent = (s2Vals[i]/1e6).toFixed(2);
+      svg.appendChild(l2);
+    }
+
+    // total label on top
+    const totalLabel = document.createElementNS(ns,'text');
+    totalLabel.setAttribute('x', x+barW/2); totalLabel.setAttribute('y', s2y - 8);
+    totalLabel.setAttribute('text-anchor','middle'); totalLabel.setAttribute('font-size','11.5'); totalLabel.setAttribute('font-weight','800');
+    totalLabel.setAttribute('fill', textPrimary);
+    totalLabel.textContent = (actualVals[i]/1e6).toFixed(2);
+    svg.appendChild(totalLabel);
+
+    // year label
+    const yLabel = document.createElementNS(ns,'text');
+    yLabel.setAttribute('x', x+barW/2); yLabel.setAttribute('y', H-6);
+    yLabel.setAttribute('text-anchor','middle'); yLabel.setAttribute('class','axis-label');
+    yLabel.textContent = y;
+    svg.appendChild(yLabel);
+
+    // hover/tap hit target for this bar
+    let tipText = '<b>' + y + '</b><br>Scope 1: ' + fmtFull(s1Vals[i], 'tCO2e') + '<br>Scope 2: ' + fmtFull(s2Vals[i], 'tCO2e') + '<br>Total: ' + fmtFull(actualVals[i], 'tCO2e');
+    if(targetMap[y] !== undefined) tipText += '<br>Target: ' + fmtFull(targetMap[y], 'tCO2e');
+    if(i > 0){
+      const cum = ((baseline - actualVals[i]) / baseline) * 100;
+      tipText += '<br>ลดสะสมจากปีฐาน: ' + cum.toFixed(2) + '%';
+    }
+    attachHit(x-3, barW+6, s2y, tipText);
+  });
+
+  // continuous target line across all years with a target value
+  const targetPts = years
+    .map((y,i)=> targetMap[y] !== undefined ? [xPositions[i]+barW/2, yOf(targetMap[y]), targetMap[y], y] : null)
+    .filter(Boolean);
+  if(targetPts.length > 1){
+    const dT = targetPts.map((p,i)=> (i===0?'M':'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    const pathT = document.createElementNS(ns,'path');
+    pathT.setAttribute('d', dT); pathT.setAttribute('fill','none'); pathT.setAttribute('stroke', targetColor);
+    pathT.setAttribute('stroke-width','2.5'); pathT.setAttribute('stroke-dasharray','5,3'); pathT.setAttribute('stroke-linecap','round');
+    svg.appendChild(pathT);
+  }
+  targetPts.forEach((p,i)=>{
+    const dot = document.createElementNS(ns,'circle');
+    dot.setAttribute('cx', p[0]); dot.setAttribute('cy', p[1]); dot.setAttribute('r', 3);
+    dot.setAttribute('fill', targetColor);
+    svg.appendChild(dot);
+    // skip label at the baseline year (2021): target == baseline == actual total already shown above the bar
+    if(p[3] === 2021) return;
+    const lbl = document.createElementNS(ns,'text');
+    lbl.setAttribute('x', p[0]); lbl.setAttribute('y', p[1]-7);
+    lbl.setAttribute('text-anchor','middle'); lbl.setAttribute('font-size','8'); lbl.setAttribute('font-weight','700');
+    lbl.setAttribute('fill', targetColor);
+    lbl.textContent = (p[2]/1e6).toFixed(2);
+    svg.appendChild(lbl);
+  });
+
+  // goal bar (2030) - single color, no scope split (no basis in source data)
+  const goalVal = targetMap[2030];
+  const goalH = (goalVal/maxScale)*plotH;
+  const goalY = padT+plotH-goalH;
+
+  const connector1 = document.createElementNS(ns,'line');
+  connector1.setAttribute('x1', lastActualX+barW); connector1.setAttribute('y1', padT+plotH - (actualVals[actualVals.length-1]/maxScale)*plotH);
+  connector1.setAttribute('x2', goalX); connector1.setAttribute('y2', goalY);
+  connector1.setAttribute('stroke', goalColor); connector1.setAttribute('stroke-width','1');
+  connector1.setAttribute('stroke-dasharray','2,3'); connector1.setAttribute('opacity','0.6');
+  svg.appendChild(connector1);
+  const connector2 = document.createElementNS(ns,'line');
+  connector2.setAttribute('x1', lastActualX+barW); connector2.setAttribute('y1', padT+plotH);
+  connector2.setAttribute('x2', goalX); connector2.setAttribute('y2', padT+plotH);
+  connector2.setAttribute('stroke', goalColor); connector2.setAttribute('stroke-width','1');
+  connector2.setAttribute('stroke-dasharray','2,3'); connector2.setAttribute('opacity','0.6');
+  svg.appendChild(connector2);
+
+  const goalRect = document.createElementNS(ns,'rect');
+  goalRect.setAttribute('x', goalX.toFixed(1)); goalRect.setAttribute('y', goalY.toFixed(1));
+  goalRect.setAttribute('width', goalW); goalRect.setAttribute('height', goalH.toFixed(1));
+  goalRect.setAttribute('rx', 4); goalRect.setAttribute('fill', goalColor); goalRect.setAttribute('opacity','0.55');
+  svg.appendChild(goalRect);
+
+  const goalLabel = document.createElementNS(ns,'text');
+  goalLabel.setAttribute('x', goalX+goalW/2); goalLabel.setAttribute('y', goalY-8);
+  goalLabel.setAttribute('text-anchor','middle'); goalLabel.setAttribute('font-size','11.5'); goalLabel.setAttribute('font-weight','800');
+  goalLabel.setAttribute('fill', textPrimary);
+  goalLabel.textContent = (goalVal/1e6).toFixed(2);
+  svg.appendChild(goalLabel);
+
+  const goalYearLabel = document.createElementNS(ns,'text');
+  goalYearLabel.setAttribute('x', goalX+goalW/2); goalYearLabel.setAttribute('y', H-6);
+  goalYearLabel.setAttribute('text-anchor','middle'); goalYearLabel.setAttribute('class','axis-label'); goalYearLabel.setAttribute('font-weight','700');
+  goalYearLabel.textContent = '2030';
+  svg.appendChild(goalYearLabel);
+
+  const goalPct = document.createElementNS(ns,'text');
+  goalPct.setAttribute('x', goalX+goalW/2); goalPct.setAttribute('y', goalY+goalH/2+3.5);
+  goalPct.setAttribute('text-anchor','middle'); goalPct.setAttribute('font-size','8'); goalPct.setAttribute('font-weight','700');
+  goalPct.setAttribute('fill', '#fff');
+  goalPct.textContent = '-42%';
+  svg.appendChild(goalPct);
+
+  attachHit(goalX-3, goalW+6, goalY,
+    '<b>2030 (เป้าหมาย SBTi)</b><br>Target: ' + fmtFull(goalVal, 'tCO2e') + '<br>ลด 42% จากปีฐาน 2564');
+}
+
+// ---------- Bar breakdown (BU / Biz) ----------
+function buildBreakdown(prefix, dict, detailDict){
+  const yearSeg = document.getElementById(prefix+'YearSeg');
+  const metricSeg = document.getElementById(prefix+'MetricSeg');
+  const barList = document.getElementById(prefix+'BarList');
+  const table = document.getElementById(prefix+'Table').querySelector('tbody');
+  const tableHeadName = document.getElementById(prefix+'Table').querySelector('th');
+
+  let state = { year: DATA.years[DATA.years.length-1], metric: prefix==='biz' ? 'ghg' : 'ghg' };
+
+  DATA.years.forEach(y=>{
+    const btn = document.createElement('button');
+    btn.className = 'seg-btn'; btn.type='button'; btn.textContent = y;
+    btn.setAttribute('aria-pressed', y===state.year ? 'true':'false');
+    btn.addEventListener('click', ()=>{
+      state.year = y;
+      Array.from(yearSeg.children).forEach(c=>c.setAttribute('aria-pressed','false'));
+      btn.setAttribute('aria-pressed','true');
+      render();
+    });
+    yearSeg.appendChild(btn);
+  });
+  yearSeg.scrollLeft = yearSeg.scrollWidth;
+
+  Object.keys(METRICS).forEach(key=>{
+    const btn = document.createElement('button');
+    btn.className = 'seg-btn'; btn.type='button'; btn.textContent = METRICS[key].label;
+    btn.setAttribute('aria-pressed', key===state.metric ? 'true':'false');
+    btn.addEventListener('click', ()=>{
+      state.metric = key;
+      Array.from(metricSeg.children).forEach(c=>c.setAttribute('aria-pressed','false'));
+      btn.setAttribute('aria-pressed','true');
+      render();
+    });
+    metricSeg.appendChild(btn);
+  });
+
+  function render(){
+    const yi = DATA.years.indexOf(state.year);
+    const m = METRICS[state.metric];
+    const rows = Object.keys(dict).map(name=>{
+      const series = seriesFor(dict[name], state.metric);
+      return { name, value: series[yi] };
+    }).sort((a,b)=> b.value - a.value);
+
+    const maxVal = Math.max(...rows.map(r=>Math.abs(r.value)), 1);
+    const canExpand = !!detailDict && ['energy','ghg','renewable'].includes(state.metric);
+
+    barList.innerHTML = '';
+    rows.forEach(r=>{
+      const pct = Math.max(Math.abs(r.value)/maxVal*100, 1.5);
+      const row = document.createElement('div');
+      row.className = 'bar-row' + (canExpand ? ' bu-row-click' : '');
+      row.innerHTML =
+        '<div class="bar-top"><span class="bar-name">'+r.name+(canExpand?' &#9662;':'')+'</span><span class="bar-value">'+fmtShort(r.value, m.unit)+'</span></div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:'+pct.toFixed(1)+'%"></div></div>';
+      if(canExpand){
+        const detailBox = document.createElement('div');
+        detailBox.className = 'bu-detail';
+        row.appendChild(detailBox);
+        row.addEventListener('click', ()=>{
+          const opening = !detailBox.classList.contains('show');
+          detailBox.classList.toggle('show');
+          if(opening && !detailBox.dataset.rendered){
+            const det = detailDict[r.name] && detailDict[r.name][String(state.year)];
+            renderDetailBreakdown(detailBox, det, state.metric, detailDict[r.name]);
+            detailBox.dataset.rendered = '1';
+          }
+        });
+      }
+      barList.appendChild(row);
+    });
+
+    table.innerHTML = '';
+    rows.forEach(r=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>'+r.name+'</td><td class="num">'+fmtFull(r.value, m.unit)+'</td>';
+      table.appendChild(tr);
+    });
+  }
+
+  render();
+}
+
+// ---------- Tabs ----------
+function initTabs(){
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      tabBtns.forEach(b=>b.setAttribute('aria-selected','false'));
+      btn.setAttribute('aria-selected','true');
+      document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+      document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+      ['buYearSeg','bizYearSeg'].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.scrollLeft = el.scrollWidth;
+      });
+    });
+  });
+}
+
+// ---------- Table toggles ----------
+function initTableToggles(){
+  document.querySelectorAll('.table-toggle').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const t = document.getElementById(btn.dataset.target);
+      t.classList.toggle('show');
+      btn.textContent = t.classList.contains('show') ? 'ซ่อนตาราง' : 'ดูตาราง';
+    });
+  });
+}
+
+// ---------- Theme toggle ----------
+function initTheme(renderOverviewDetail){
+  const btn = document.getElementById('themeBtn');
+  let mode = null; // null = follow system
+  btn.addEventListener('click', ()=>{
+    const root = document.documentElement;
+    if(mode === 'dark'){ mode = 'light'; root.setAttribute('data-theme','light'); }
+    else if(mode === 'light'){ mode = null; root.removeAttribute('data-theme'); }
+    else { mode = 'dark'; root.setAttribute('data-theme','dark'); }
+    // redraw charts to pick up resolved colors
+    buildKPI();
+    drawMainChart();
+    buildSBTChart();
+    if(renderOverviewDetail) renderOverviewDetail();
+  });
+}
+
+// ---------- Init ----------
+buildKPI();
+buildMetricSeg();
+drawMainChart();
+buildSBTChart();
+const renderOverviewDetail = initOverviewDetail();
+buildBreakdown('bu', DATA.bu, DATA.detail.bu);
+buildBreakdown('biz', DATA.biz);
+initTabs();
+initTableToggles();
+initTheme(renderOverviewDetail);
+
+window.addEventListener('resize', ()=>{ drawMainChart(); buildSBTChart(); });
+</script>
+</body>
+</html>
