@@ -30,11 +30,11 @@
   /* Waste amber ramp — darkest to lightest, validated as an ordinal ramp
      (monotone lightness, adjacent dL >= 0.06, light end clears 2:1 on this surface).
      shade0 exists so multi-segment breakdowns get a full five steps. */
-  --shade0:     #3e1f00;
-  --shade1:     #582e00;
-  --shade2:     #894a00;
-  --shade3:     #bd6900;
-  --shade4:     #e48524;
+  --shade0:     #0B3D2E;
+  --shade1:     #0B6B43;
+  --shade2:     #2C8B57;
+  --shade3:     #59C36A;
+  --shade4:     #A8DFAE;
   --accent:     var(--shade1);
 }
 :root[data-theme="dark"]{
@@ -50,11 +50,11 @@
   --good:           #0ca30c;
   --critical:       #e66767;
 
-  --shade0:     #7b4200;
-  --shade1:     #9d5809;
-  --shade2:     #c46d00;
-  --shade3:     #ef8600;
-  --shade4:     #ffb06e;
+  --shade0:     #0B3D2E;
+  --shade1:     #0B6B43;
+  --shade2:     #2C8B57;
+  --shade3:     #59C36A;
+  --shade4:     #A8DFAE;
   --accent:     var(--shade1);
 }
 @media (prefers-color-scheme: dark){
@@ -71,11 +71,11 @@
     --good:           #0ca30c;
     --critical:       #e66767;
 
-    --shade0:     #7b4200;
-    --shade1:     #9d5809;
-    --shade2:     #c46d00;
-    --shade3:     #ef8600;
-    --shade4:     #ffb06e;
+    --shade0:     #0B3D2E;
+  --shade1:     #0B6B43;
+  --shade2:     #2C8B57;
+  --shade3:     #59C36A;
+  --shade4:     #A8DFAE;
     --accent:     var(--shade1);
   }
 }
@@ -969,8 +969,8 @@ function renderDetailBreakdown(container, det, metric, multiYearDict, year){
   const METHOD_KEYS  = ['recycled_reused','composted_fed','incineration','landfill_other','food'];
   const METHOD_NAMES = { recycled_reused:'Recycled / Reused', composted_fed:'Composted / Animal Feed',
     incineration:'Incineration', landfill_other:'Landfill / Other', food:'Food Loss & Waste' };
-  const METHOD_SHADES = { recycled_reused:'--shade4', composted_fed:'--shade3',
-    incineration:'--shade2', landfill_other:'--shade0', food:'--shade1' };
+  const METHOD_SHADES = { recycled_reused:'--shade0', composted_fed:'--shade1',
+    incineration:'--shade2', landfill_other:'--shade3', food:'--shade4' };
   function collapseMethod(m){
     m = m || {};
     return {
@@ -1003,7 +1003,7 @@ function renderDetailBreakdown(container, det, metric, multiYearDict, year){
     // since that combined view was confusing (the two are separate GRI disclosures, 306-4 vs 306-5).
     const splitKey = metric === 'diverted' ? 'diverted_split' : 'directed_split';
     const d0 = det[splitKey] || {};
-    const colors = { hazardous: resolveColor('--shade0'), nonhazardous: resolveColor('--shade3') };
+    const colors = { hazardous: resolveColor('--shade1'), nonhazardous: resolveColor('--shade0') };
     const names = { hazardous:'Hazardous', nonhazardous:'Non-hazardous' };
     const segs = ['nonhazardous','hazardous'].map(k=>({ label:names[k], value:d0[k]||0, color:colors[k] }));
     let mix = null;
@@ -1025,7 +1025,7 @@ function renderDetailBreakdown(container, det, metric, multiYearDict, year){
     // like "the hazardous number", which was the same confusing pattern as Diverted/Directed).
     const HZ_KEYS  = ['recycle','reuse','incineration','landfill'];
     const HZ_NAMES = { recycle:'Recycle', reuse:'Reuse', incineration:'Incineration', landfill:'Landfill' };
-    const HZ_SHADES = { recycle:'--shade4', reuse:'--shade3', incineration:'--shade2', landfill:'--shade0' };
+    const HZ_SHADES = { recycle:'--shade0', reuse:'--shade1', incineration:'--shade2', landfill:'--shade3' };
     function hzM(d){ const m = (d && d.hz_method) || {}; return { recycle:m.recycle||0, reuse:m.reuse||0, incineration:m.incineration||0, landfill:(m.landfill||0)+(m.other||0) }; }
     const d0 = hzM(det);
     const colors = {}; HZ_KEYS.forEach(k=>{ colors[k] = resolveColor(HZ_SHADES[k]); });

@@ -30,11 +30,11 @@
   /* Environmental green ramp — darkest to lightest, validated as an ordinal ramp
      (monotone lightness, adjacent dL >= 0.06, light end clears 2:1 on this surface).
      shade0 exists so the 5-source renewable breakdown has a full five steps. */
-  --shade0:     #0d2f21;
-  --shade1:     #1b4332;
-  --shade2:     #2d6a4f;
-  --shade3:     #419471;
-  --shade4:     #66b389;
+  --shade0:     #0B3D2E;
+  --shade1:     #0B6B43;
+  --shade2:     #2C8B57;
+  --shade3:     #59C36A;
+  --shade4:     #A8DFAE;
   --accent:     var(--shade1);
 }
 :root[data-theme="dark"]{
@@ -50,11 +50,11 @@
   --good:           #0ca30c;
   --critical:       #e66767;
 
-  --shade0:     #1f5039;
-  --shade1:     #2d6a4f;
-  --shade2:     #40916c;
-  --shade3:     #52b788;
-  --shade4:     #95d5b2;
+  --shade0:     #0B3D2E;
+  --shade1:     #0B6B43;
+  --shade2:     #2C8B57;
+  --shade3:     #59C36A;
+  --shade4:     #A8DFAE;
   --accent:     var(--shade1);
 }
 @media (prefers-color-scheme: dark){
@@ -71,11 +71,11 @@
     --good:           #0ca30c;
     --critical:       #e66767;
 
-    --shade0:     #1f5039;
-    --shade1:     #2d6a4f;
-    --shade2:     #40916c;
-    --shade3:     #52b788;
-    --shade4:     #95d5b2;
+    --shade0:     #0B3D2E;
+  --shade1:     #0B6B43;
+  --shade2:     #2C8B57;
+  --shade3:     #59C36A;
+  --shade4:     #A8DFAE;
     --accent:     var(--shade1);
   }
 }
@@ -990,9 +990,9 @@ function renderDetailBreakdown(container, det, metric, multiYearDict, year){
   if(metric === 'energy'){
     const e = det.energy;
     const segs = [
-      {label:'Fossil', value:e.fossil, color: resolveColor('--shade2')},
-      {label:'Renewable', value:e.renewable, color: resolveColor('--shade3')},
-      {label:'Purchased Electricity', value:e.electricity, color: resolveColor('--shade1')},
+      {label:'Fossil', value:e.fossil, color: resolveColor('--shade0')},
+      {label:'Renewable', value:e.renewable, color: resolveColor('--shade1')},
+      {label:'Purchased Electricity', value:e.electricity, color: resolveColor('--shade2')},
     ];
     let mix = null;
     if(multiYearDict){
@@ -1002,14 +1002,14 @@ function renderDetailBreakdown(container, det, metric, multiYearDict, year){
         electricity: seriesFromDetail(d=>d.energy.electricity),
       };
       mix = buildSourceStackChart(years, series, {
-        fossil: resolveColor('--shade2'), renewable: resolveColor('--shade3'), electricity: resolveColor('--shade1'),
+        fossil: resolveColor('--shade0'), renewable: resolveColor('--shade1'), electricity: resolveColor('--shade2'),
       }, { fossil:'Fossil', renewable:'Renewable', electricity:'Purchased Electricity' }, 'GJ');
     }
     wrap.appendChild(donutBlock(segs, 'GJ', mix, year));
     const fossilNamed = {}; Object.entries(e.fossil_types||{}).forEach(([k,v])=>{ fossilNamed[FOSSIL_LABELS[k]||k]=v; });
     const renewNamed = {}; Object.entries(e.renewable_types||{}).forEach(([k,v])=>{ renewNamed[RENEW_LABELS[k]||k]=v; });
-    if(Object.keys(fossilNamed).length) wrap.appendChild(subBarList('Fossil by Type', fossilNamed, 'var(--shade2)', 'GJ'));
-    if(Object.keys(renewNamed).length) wrap.appendChild(subBarList('Renewable by Type', renewNamed, 'var(--shade3)', 'GJ'));
+    if(Object.keys(fossilNamed).length) wrap.appendChild(subBarList('Fossil by Type', fossilNamed, 'var(--shade0)', 'GJ'));
+    if(Object.keys(renewNamed).length) wrap.appendChild(subBarList('Renewable by Type', renewNamed, 'var(--shade1)', 'GJ'));
     // Biomass drills one level deeper into feedstocks (wood, rice husk, ...) — same figures
     // used by the Renewable % view's own Biomass by Type list, just surfaced here too.
     const bmNamedEnergy = {};
@@ -1019,8 +1019,8 @@ function renderDetailBreakdown(container, det, metric, multiYearDict, year){
     const g = det.ghg;
     const s1total = g.s1_stationary + g.s1_fugitive + g.s1_mobile + g.s1_other;
     const segs = [
-      {label:'Scope 1 (direct emissions)', value: s1total, color: resolveColor('--shade1')},
-      {label:'Scope 2 (purchased electricity)', value: g.s2, color: resolveColor('--shade3')},
+      {label:'Scope 1 (direct emissions)', value: s1total, color: resolveColor('--shade0')},
+      {label:'Scope 2 (purchased electricity)', value: g.s2, color: resolveColor('--shade1')},
     ];
     let mix = null;
     if(multiYearDict){
@@ -1029,7 +1029,7 @@ function renderDetailBreakdown(container, det, metric, multiYearDict, year){
         s2: seriesFromDetail(d=> d.ghg.s2),
       };
       mix = buildSourceStackChart(years, series,
-        { s1: resolveColor('--shade1'), s2: resolveColor('--shade3') },
+        { s1: resolveColor('--shade0'), s2: resolveColor('--shade1') },
         { s1:'Scope 1', s2:'Scope 2' }, 'tCO2e');
     }
     wrap.appendChild(donutBlock(segs, 'tCO2e', mix, year));
@@ -1038,7 +1038,7 @@ function renderDetailBreakdown(container, det, metric, multiYearDict, year){
     if(g.s1_fugitive) s1types['Fugitive (leaks/refrigerants)'] = g.s1_fugitive;
     if(g.s1_mobile) s1types['Mobile (vehicles)'] = g.s1_mobile;
     if(g.s1_other) s1types['Other (fertilizer, etc.)'] = g.s1_other;
-    if(Object.keys(s1types).length) wrap.appendChild(subBarList('Scope 1 by Type', s1types, 'var(--shade1)', 'tCO2e'));
+    if(Object.keys(s1types).length) wrap.appendChild(subBarList('Scope 1 by Type', s1types, 'var(--shade0)', 'tCO2e'));
   } else if(metric === 'renewable'){
     const r = det.renewable;
     // Solar self-generation and PPA are split apart: one is own-asset generation, the
@@ -1231,8 +1231,8 @@ function buildSBTChart(){
     const legend = document.createElement('div');
     legend.style.cssText = 'display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-secondary);margin-top:2px;';
     legend.innerHTML =
-      '<span><span style="display:inline-block;width:9px;height:9px;background:'+resolveColor('--shade1')+';border-radius:2px;margin-right:4px;"></span>Scope 1</span>'+
-      '<span><span style="display:inline-block;width:9px;height:9px;background:'+resolveColor('--shade3')+';border-radius:2px;margin-right:4px;"></span>Scope 2</span>'+
+      '<span><span style="display:inline-block;width:9px;height:9px;background:'+resolveColor('--shade0')+';border-radius:2px;margin-right:4px;"></span>Scope 1</span>'+
+      '<span><span style="display:inline-block;width:9px;height:9px;background:'+resolveColor('--shade1')+';border-radius:2px;margin-right:4px;"></span>Scope 2</span>'+
       '<span><span style="display:inline-block;width:9px;height:2px;background:#e0a020;margin-right:4px;vertical-align:middle;"></span>Target (−42% by 2030)</span>';
     body.appendChild(legend);
 
@@ -1268,8 +1268,8 @@ function drawSBTChart(years, s1Vals, s2Vals, actualVals, tPath, goal2030, select
   const gap = 6;
   const barW = (plotW - gap*(n-1))/n;
   const fs = 9.5;
-  const s1Color = resolveColor('--shade1');
-  const s2Color = resolveColor('--shade3');
+  const s1Color = resolveColor('--shade0');
+  const s2Color = resolveColor('--shade1');
   const secondary = resolveColor('--text-secondary');
   const textPrimary = resolveColor('--text-primary');
   const yOf = v => padT + plotH - (v/maxVal*plotH);

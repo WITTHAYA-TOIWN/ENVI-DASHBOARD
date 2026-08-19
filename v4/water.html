@@ -30,11 +30,11 @@
   /* Water blue ramp — darkest to lightest, validated as an ordinal ramp
      (monotone lightness, adjacent dL >= 0.06, light end clears 2:1 on this surface).
      shade0 exists so the 5-source withdrawal breakdown has a full five steps. */
-  --shade0:     #03294a;
-  --shade1:     #0f3c64;
-  --shade2:     #185f9d;
-  --shade3:     #2785d8;
-  --shade4:     #4aa5fb;
+  --shade0:     #0B3D2E;
+  --shade1:     #0B6B43;
+  --shade2:     #2C8B57;
+  --shade3:     #59C36A;
+  --shade4:     #A8DFAE;
   --accent:     var(--shade1);
 }
 :root[data-theme="dark"]{
@@ -50,11 +50,11 @@
   --good:           #0ca30c;
   --critical:       #e66767;
 
-  --shade0:     #1c5589;
-  --shade1:     #2b6fae;
-  --shade2:     #2d8add;
-  --shade3:     #51a9ff;
-  --shade4:     #95c9ff;
+  --shade0:     #0B3D2E;
+  --shade1:     #0B6B43;
+  --shade2:     #2C8B57;
+  --shade3:     #59C36A;
+  --shade4:     #A8DFAE;
   --accent:     var(--shade1);
 }
 @media (prefers-color-scheme: dark){
@@ -71,11 +71,11 @@
     --good:           #0ca30c;
     --critical:       #e66767;
 
-    --shade0:     #1c5589;
-    --shade1:     #2b6fae;
-    --shade2:     #2d8add;
-    --shade3:     #51a9ff;
-    --shade4:     #95c9ff;
+    --shade0:     #0B3D2E;
+  --shade1:     #0B6B43;
+  --shade2:     #2C8B57;
+  --shade3:     #59C36A;
+  --shade4:     #A8DFAE;
     --accent:     var(--shade1);
   }
 }
@@ -961,18 +961,18 @@ function renderDetailBreakdown(container, det, metric, multiYearDict, year){
       keys:   ['surface','ground','sea','thirdparty','rain'],
       names:  { surface:'Surface (river/canal/lake)', ground:'Groundwater', sea:'Seawater',
                 thirdparty:'Third-party / municipal', rain:'Rainwater' },
-      shades: { surface:'--shade1', ground:'--shade2', sea:'--shade0',
+      shades: { surface:'--shade0', ground:'--shade1', sea:'--shade2',
                 thirdparty:'--shade3', rain:'--shade4' },
     },
     discharge: {
       keys:   ['surface','sea','thirdparty'],
       names:  { surface:'To surface water', sea:'To sea', thirdparty:'To third party / sewer' },
-      shades: { surface:'--shade1', sea:'--shade2', thirdparty:'--shade3' },
+      shades: { surface:'--shade0', sea:'--shade1', thirdparty:'--shade2' },
     },
     recycled: {
       keys:   ['recycle','reuse'],
       names:  { recycle:'Recycled', reuse:'Reused' },
-      shades: { recycle:'--shade1', reuse:'--shade3' },
+      shades: { recycle:'--shade0', reuse:'--shade1' },
     },
   };
 
@@ -990,13 +990,13 @@ function renderDetailBreakdown(container, det, metric, multiYearDict, year){
         discharged: seriesFromDetail(d=> Object.values(d.discharge||{}).reduce((a,b)=>a+b,0)),
       };
       const mix = buildSourceStackChart(years, series,
-        { consumed: resolveColor('--shade1'), discharged: resolveColor('--shade3') },
+        { consumed: resolveColor('--shade0'), discharged: resolveColor('--shade1') },
         { consumed:'Consumed (not returned)', discharged:'Discharged back' }, U);
       const wTot = Object.values(wd).reduce((a,b)=>a+b,0);
       const dTot = Object.values(dc).reduce((a,b)=>a+b,0);
       const segs = [
-        {label:'Consumed (not returned)', value: wTot-dTot, color: resolveColor('--shade1')},
-        {label:'Discharged back', value: dTot, color: resolveColor('--shade3')},
+        {label:'Consumed (not returned)', value: wTot-dTot, color: resolveColor('--shade0')},
+        {label:'Discharged back', value: dTot, color: resolveColor('--shade1')},
       ];
       wrap.appendChild(donutBlock(segs, U, mix, year));
       wrap.appendChild(Object.assign(document.createElement('div'), {
