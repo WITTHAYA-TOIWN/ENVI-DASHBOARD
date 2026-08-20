@@ -141,7 +141,7 @@ main{ padding: 0 16px; }
   background: var(--surface-1); border:1px solid var(--border); border-radius: 14px;
   padding: 12px 12px 10px;
 }
-.stat-tile .label{ font-size: 11.5px; color: var(--text-muted); font-weight:600; }
+.stat-tile .label{ font-size: 11.5px; color: var(--text-secondary); font-weight:600; }
 .stat-tile .label .label-year{ display:block; font-size:10px; font-weight:600; opacity:.72; margin-top:1px; }
 .stat-tile .value{ font-size: 20px; font-weight:700; margin-top: 3px; letter-spacing:-0.2px; }
 .stat-tile .delta{ font-size: 11.5px; margin-top: 3px; font-weight:600; }
@@ -291,7 +291,7 @@ svg.donut{ width:150px; height:150px; display:block; }
 .donut-legend .text{ display:flex; flex-direction:column; gap:1px; }
 .donut-legend .name{ color:var(--text-primary); font-weight:600; }
 .donut-legend .val{ color:var(--text-secondary); font-variant-numeric:tabular-nums; font-size:11.5px; }
-.subbreak-title{ font-size:11px; font-weight:700; color:var(--text-muted); margin:0 0 8px; text-transform:uppercase; letter-spacing:.3px; }
+.subbreak-title{ font-size:11px; font-weight:700; color:var(--text-secondary); margin:0 0 8px; text-transform:uppercase; letter-spacing:.3px; }
 .subbreak-title.with-icon{ display:flex; align-items:center; gap:6px; }
 .subbreak-title .ttl-icon{ flex:none; width:15px; height:15px; display:flex; align-items:center; justify-content:center; border-radius:4px; background:var(--bar-color, var(--accent)); }
 .subbreak-title .ttl-icon svg{ width:10px; height:10px; display:block; }
@@ -1068,7 +1068,7 @@ function yearMatrix(title, hint, rows, years, colorVar, goodWhenUp, icon, unit){
 
   if(hint){
     const hi = document.createElement('div');
-    hi.style.cssText = 'font-size:9.5px;color:var(--text-muted);margin:-4px 0 10px;';
+    hi.style.cssText = 'font-size:9.5px;color:var(--text-secondary);margin:-4px 0 10px;';
     hi.textContent = hint;
     wrap.appendChild(hi);
   }
